@@ -1,7 +1,7 @@
 {
   "name": "forecast-query",
   "version": "1.0.0",
-  "description": "Queryable typescript API for weather information from openweathermap",
+  "description": "Queryable typescript API for weather information from openweathermap, no dependencies",
   "main": "index.js",
   "repository": "https://github.com/jindra12/forecast-query.git",
   "author": "Jan Jindráček",
@@ -12,9 +12,8 @@
     "query", "queryable", "rain", "sun",
     "rainy", "sunny", "cloud", "clouds",
     "cloudy", "storm", "stormy", "sunny weather",
-    "rainy weather", "cloudy weather", "stormy weather"],
+    "rainy weather", "cloudy weather", "stormy weather", "dependency", "no dependency"],
   "dependencies": {
-    "whatwg-fetch": "^3.2.0"
   },
   "devDependencies": {
   }
