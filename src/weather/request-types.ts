@@ -21,7 +21,7 @@ export type Language = 'af'
 	| 'hu'
 	| 'id'
 	| 'it'
-	| 'ja'	
+	| 'ja'
 	| 'kr'
 	| 'la'
 	| 'lt'
@@ -30,12 +30,12 @@ export type Language = 'af'
 	| 'nl'
 	| 'pl'
 	| 'pt'
-	| 'pt_br'	
-	| 'ro'	
+	| 'pt_br'
+	| 'ro'
 	| 'ru'
 	| 'sv'
 	| 'se'
-	| 'sk'	
+	| 'sk'
 	| 'sl'
 	| 'sp'
 	| 'es'
@@ -43,10 +43,10 @@ export type Language = 'af'
 	| 'th'
 	| 'tr'
 	| 'ua'
-	| 'uk'	
-	| 'vi'	
-	| 'zh_cn'	
-	| 'zh_tw'	
+	| 'uk'
+	| 'vi'
+	| 'zh_cn'
+	| 'zh_tw'
 	| 'zu';
 
 interface ThunderstormType {
@@ -270,10 +270,7 @@ export interface Address {
 	}
 }
 
-/**
- * Source: https://openweathermap.org/api/hourly-forecast
- */
-export interface HourlyForecast {
+export interface Header {
 	/**
 	 * Response code
 	 */
@@ -286,12 +283,144 @@ export interface HourlyForecast {
 	 * Number of timestamps returned by this API call 
 	 */
 	cnt: number,
+}
+
+/**
+ * Source: https://openweathermap.org/forecast5
+ */
+export interface FiveDayForecast extends Header {
+	/**
+	 * Weather response
+	 */
+	list: Weather[];
+	city: Address;
+}
+
+/**
+ * https://openweathermap.org/forecast16
+ */
+export interface SixteenDayForecast extends Header {
+	city: Address,
+	list: ExtendedLongDaysForecastPart[],
+}
+
+/**
+ * https://openweathermap.org/api/forecast30
+ */
+export interface ThirtyDayForecast extends Header {
+	city: Address,
+	list: ExtendedLongDaysForecastPart[],
+}
+
+export interface AdvancedApiPart {
+	dt: number;
+	/**
+	 * UTC time
+	 */
+	sunrise: number;
+	/**
+	 * UTC time
+	 */
+	sunset: number;
+	pressure: number;
+	humidity: number;
+	dew_point: number;
+	uvi: number;
+	clouds: number;
+	visibility: number;
+	weather: Weather[],
+	rain: {
+		"1h": number;
+	},
+	snow: {
+		"1h": number;
+	}
+}
+
+export interface ExtendedLongDaysForecastPart extends AdvancedApiPart {
+	/**
+	 * Speed at which the wind is blowing
+	 */
+	speed: number;
+	/**
+	 * Degree of gust of wind
+	 */
+	deg: number;
+}
+
+export interface OneCallApiPart extends AdvancedApiPart {
+	wind_speed: number;
+	wind_deg: number;
+}
+
+export interface OneCallApiStandart {
+	dt: number;
+	temp: number;
+	/**
+	 * Temperature feeling
+	 */
+	feels_like: number;
+}
+
+export interface OneCallApiExtended {
+	dt: number;
+	temp: {
+		day: number;
+		min: number;
+		max: number;
+		night: number;
+		eve: number;
+		morn: number;
+	};
+	feels_like: {
+		day: number;
+		night: number;
+		eve: number;
+		morn: number;
+	};
+}
+
+export interface OneCallApi {
+	lat: 33.44,
+	lon: -94.04,
+	timezone: "America/Chicago",
+	timezone_offset: -18000,
+	current: OneCallApiPart,
+	/**
+	 * Never filled, TODO: add support for minute API if necessary
+	 */
+	minutely: (OneCallApiPart & OneCallApiStandart)[];
+	/**
+	 * Hourly temp updates
+	 */
+	hourly: (OneCallApiPart & OneCallApiStandart)[];
+	/**
+	 * Daily temp updates
+	 */
+	daily: (OneCallApiPart & OneCallApiExtended)[],
+}
+
+
+
+
+/**
+ * Source: https://openweathermap.org/api/hourly-forecast
+ */
+export interface HourlyForecast extends Header {
 	/**
 	 * Weather response
 	 */
 	list: Weather[],
 	city: Address,
 };
+
+export type WeatherResponseType = 'hourly' | 'daily' | '5day' |  '16day' | '30day' | 'onecall';
+
+export type WeatherResponse = (HourlyForecast & { kind: 'hourly' })
+	| (FiveDayForecast & { kind: '5day' })
+	| (SixteenDayForecast & { kind: '16day' })
+	| (ThirtyDayForecast & { kind: '30day' })
+	| (OneCallApi & { kind: 'onecall' });
 
 export interface ApiQuery {
 	appid: string;

@@ -1,16 +1,34 @@
-import { Query, CityNameQuery, CityIdQuery, GeoApiQuery, ZipCodeQuery, CitiesIdQuery } from "./request-types";
+import { Query, CityNameQuery, CityIdQuery, GeoApiQuery, ZipCodeQuery, CitiesIdQuery, WeatherResponse, WeatherResponseType } from "./request-types";
 
 export const request = async (
     query: Query,
     fetchImpl: (init: RequestInfo) => Promise<Response>,
+    reportError: (e: any) => void,
     tries: number = 6
-) => {
+): Promise<WeatherResponse | null> => {
     let tried = requestImpl(query);
     while (tried === null && query.easedLevel < tries) {
         ease(query);
         tried = requestImpl(query);
     }
-    return tried ? fetchImpl(tried) : null;
+    if (!tried) {
+        return null;
+    }
+
+    try {
+        const response = await fetchImpl(tried[0]);
+        if (response.status === 200) {
+            const json = await response.json();
+            json.kind = tried[1];
+            return json;
+        } else {
+            reportError(response);
+        }
+    } catch (e) {
+        reportError(e);
+    }
+
+    return null;
 };
 
 const ease = async (query: Query) => {
@@ -29,11 +47,11 @@ const ease = async (query: Query) => {
     }
 }
 
-const requestImpl = (query: Query) => {
+const requestImpl = (query: Query): [string, WeatherResponseType] | null => {
     const base = byDate(query);
     query.easedLevel += 1;
-    return base ? `${
-        base
+    return base ? [`${
+        base[0]
     }${
         byQuery(query)
     }${
@@ -42,7 +60,7 @@ const requestImpl = (query: Query) => {
         query.appid
     }&lang=${
         query.lang || 'en'
-    }` : null;
+    }`, base[1]] : null;
 };
 
 const arrayToUrl = (...array: Array<string | undefined>) => array.filter(s => s).join(',');
@@ -78,27 +96,27 @@ const isDaily = (query: Query): boolean => compareDates(
     getDateWoTime(query.to)
 );
 
-const byDate = (query: Query): string | null => {
+const byDate = (query: Query): [string, WeatherResponseType] | null => {
     if (isBetween(today(), fourDaysFromNow(), query) && query.by === 'hour' && query.isPro) {
-        return 'pro.openweathermap.org/data/2.5/forecast/hourly?';
+        return ['pro.openweathermap.org/data/2.5/forecast/hourly?', 'hourly'];
     }
     if (isBetween(today(), fiveDaysFromNow(), query)) {
-        return 'api.openweathermap.org/data/2.5/forecast?';
+        return ['api.openweathermap.org/data/2.5/forecast?', '5day'];
     }
     if (isBetween(today(), sixteenDaysAhead(), query) && query.isPro) {
-        return 'pro.openweathermap.org/data/2.5/forecast/daily?';
+        return ['pro.openweathermap.org/data/2.5/forecast/daily?', '16day'];
     }
     if (isBetween(today(), thirtyDaysAhead(), query) && query.isPro) {
-        return 'pro.openweathermap.org/data/2.5/forecast/climate?';
+        return ['pro.openweathermap.org/data/2.5/forecast/climate?', '30day'];
     }
     if (isDaily(query) && query.kind === 'geo') {
-        return `api.openweathermap.org/data/2.5/onecall?exclude=minutely${query.by === 'day' ? ',hourly' : ''}`;
+        return [`api.openweathermap.org/data/2.5/onecall?exclude=minutely${query.by === 'day' ? ',hourly' : ''}`, 'onecall'];
     }
     if (query.kind === 'geo') {
-        return `api.openweathermap.org/data/2.5/onecall/timemachine?dt=${query.from.getTime()}&exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`;
+        return [`api.openweathermap.org/data/2.5/onecall/timemachine?dt=${query.from.getTime()}&exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
     }
     if (isDaily(query) && query.by === 'day') {
-        return 'api.openweathermap.org/data/2.5/weather?';
+        return ['api.openweathermap.org/data/2.5/weather?', 'daily'];
     }
     return null;
 };

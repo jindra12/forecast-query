@@ -63,4 +63,5 @@ export interface Forecast extends Promise<Forecast> {
      */
     store: (storage: Storage, expire?: 'never' | number) => Forecast;
     fetch: (fn: (input: RequestInfo) => Promise<Response>) => Forecast;
+    error: (reporter: (e: any) => void) => Forecast;
 }
