@@ -1,14 +1,8 @@
 import { Rain, Clear, Clouds, Thunderstorm, Drizzle, Day, WeatherId, WeatherMain, TypeOfWeather, Smokey, Tornado, Misty, Hazey, Dusty, Foggy, Sandy, Ashy, Squally, WeatherIcon } from "./weather/request-types";
 
 export interface Forecast extends Promise<Forecast> {
-    in: (...value: string[]) => Forecast;
+    in: (...value: (string[] | Array<{ lat: number, lon: number }>)) => Forecast;
     at: (...value: (Date | number | string)[]) => Forecast;
-    around: <T extends 'square' | 'circle'>(
-        type: T,
-        positions: T extends 'square' 
-        ? { lat: [number, number], lon: [number, number], zoom: number }
-        : { distance: number, cities: number }
-    ) => Forecast;
 
     rainy: () => Promise<Rain | null>;
     drizzle: () => Promise<Drizzle | null>;
@@ -50,24 +44,19 @@ export interface Forecast extends Promise<Forecast> {
      */
     sun: (what?: 'rise' | 'down') => Promise<Date | null>;
 
-    today: (from?: 'now' | 'all') => Forecast;
+    today: (from?: 'now' | 'midnight') => Forecast;
     tomorrow: () => Forecast;
     yesterday: () => Forecast;
     dayAfterTomorrow: () => Forecast;
     dayBeforeYesterday: () => Forecast;
     week: (kind?: 'all' | 'work') => Forecast;
-    between: (from: Date | string | number, to: Date | string | number) => Forecast;
+    between: (from: Date | string | number, to: Date | string | number, by: 'day' | 'hour' | 'minute') => Forecast;
     hour: (which?: number) => Forecast;
 
     /**
      * Get url to icon from openweathermap api
      */
     icon: (ico: WeatherIcon) => string;
-
-    /**
-     * Uses markov chain to try and generate static distribution between two dates
-     */
-    prediction: (from: Date | string | number, to: Date | string | number) => Array<TypeOfWeather>;
 
     /**
      * Can pass localStorage for caching. Can expire in an amount of mintues

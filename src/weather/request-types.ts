@@ -295,6 +295,11 @@ export interface HourlyForecast {
 
 export interface ApiQuery {
 	appid: string;
+	from: Date;
+	to: Date;
+	by: 'day' | 'hour';
+	easedLevel: number;
+	isPro?: boolean;
 	units?: 'metric' | 'imperial';
 	lang?: Language;
 }
@@ -328,22 +333,4 @@ export interface ZipCodeQuery {
 	kind: 'zip';
 }
 
-export interface BoxQuery {
-	/**
-	 * [lon-left, lat-bottom, lon-right, lat-top, zoom]
-	 */
-	bbox: [number, number, number, number, number];
-	kind: 'box';
-}
-
-export interface CityCircleQuery {
-	lat: number;
-	lon: number;
-	/**
-	 * How many cities should be included
-	 */
-	cnt: number;
-	kind: 'circle';
-}
-
-export type Query = ApiQuery & (CityNameQuery | CityIdQuery | CitiesIdQuery | GeoApiQuery | ZipCodeQuery | BoxQuery | CityCircleQuery);
+export type Query = ApiQuery & (CityNameQuery | CityIdQuery | CitiesIdQuery | GeoApiQuery | ZipCodeQuery);
