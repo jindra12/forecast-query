@@ -154,7 +154,7 @@ export interface Response {
 	temp: number;
 	feels_like: number;
 	temp_min: number;
-	temo_max: number;
+	temp_max: number;
 	pressure: number;
 	/**
 	 * Atmospheric pressure on sea level
@@ -286,6 +286,17 @@ export interface Header {
 }
 
 /**
+ * Source: https://openweathermap.org/current
+ */
+export interface DailyForecast extends Header {
+	/**
+	 * Weather response
+	 */
+	list: Weather[];
+	city: Address;
+}
+
+/**
  * Source: https://openweathermap.org/forecast5
  */
 export interface FiveDayForecast extends Header {
@@ -381,11 +392,11 @@ export interface OneCallApiExtended {
 }
 
 export interface OneCallApi {
-	lat: 33.44,
-	lon: -94.04,
+	lat: number;
+	lon: number;
 	timezone: "America/Chicago",
-	timezone_offset: -18000,
-	current: OneCallApiPart,
+	timezone_offset: number;
+	current: OneCallApiPart & OneCallApiExtended,
 	/**
 	 * Never filled, TODO: add support for minute API if necessary
 	 */
@@ -417,6 +428,7 @@ export interface HourlyForecast extends Header {
 export type WeatherResponseType = 'hourly' | 'daily' | '5day' |  '16day' | '30day' | 'onecall';
 
 export type WeatherResponse = (HourlyForecast & { kind: 'hourly' })
+	| (DailyForecast & { kind: 'daily' })
 	| (FiveDayForecast & { kind: '5day' })
 	| (SixteenDayForecast & { kind: '16day' })
 	| (ThirtyDayForecast & { kind: '30day' })

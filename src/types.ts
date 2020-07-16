@@ -1,8 +1,9 @@
-import { Rain, Clear, Clouds, Thunderstorm, Drizzle, Day, WeatherId, WeatherMain, TypeOfWeather, Smokey, Tornado, Misty, Hazey, Dusty, Foggy, Sandy, Ashy, Squally, WeatherIcon } from "./weather/request-types";
+import { Rain, Clear, Clouds, Thunderstorm, Drizzle, Day, WeatherId, WeatherMain, TypeOfWeather, Smokey, Tornado, Misty, Hazey, Dusty, Foggy, Sandy, Ashy, Squally, WeatherIcon, Weather, AdvancedApiPart, Address } from "./weather/request-types";
 
-export interface Forecast extends Promise<Forecast> {
-    in: (...value: (string[] | Array<{ lat: number, lon: number }>)) => Forecast;
+export interface Forecast {
+    in: (...value: string[]) => Forecast;
     at: (...value: (Date | number | string)[]) => Forecast;
+    around: (lat: number, lon: number) => Forecast;
 
     rainy: () => Promise<Rain | null>;
     drizzle: () => Promise<Drizzle | null>;
@@ -53,15 +54,35 @@ export interface Forecast extends Promise<Forecast> {
     between: (from: Date | string | number, to: Date | string | number, by: 'day' | 'hour' | 'minute') => Forecast;
     hour: (which?: number) => Forecast;
 
+    result: () => Promise<Result>;
+
     /**
      * Get url to icon from openweathermap api
      */
     icon: (ico: WeatherIcon) => string;
 
+    fetchingFn: (request: RequestInfo) => Promise<Response>;
+    storage: Storage;
+    location: number[] | string[] | { lat: number, lon: number };
+    dates: Date[];
+    reporter: (e: any) => void;
+
     /**
      * Can pass localStorage for caching. Can expire in an amount of mintues
      */
     store: (storage: Storage, expire?: 'never' | number) => Forecast;
+    storeClearTimeout?: number;
     fetch: (fn: (input: RequestInfo) => Promise<Response>) => Forecast;
     error: (reporter: (e: any) => void) => Forecast;
+    delay: (ms: number) => Forecast;
+
+    /**
+     * Creates a new instance of Forecast from this one
+     */
+    copy: () => Forecast;
+}
+
+export interface Result extends Partial<AdvancedApiPart> {
+    weather: Weather[];
+    address: Address;
 }

@@ -1,10 +1,11 @@
 import { Query, CityNameQuery, CityIdQuery, GeoApiQuery, ZipCodeQuery, CitiesIdQuery, WeatherResponse, WeatherResponseType } from "./request-types";
+import { today, fiveDaysFromNow, isBetween, fourDaysFromNow, sixteenDaysAhead, thirtyDaysAhead, isDaily, arrayToUrl } from "./util";
 
 export const request = async (
     query: Query,
     fetchImpl: (init: RequestInfo) => Promise<Response>,
     reportError: (e: any) => void,
-    tries: number = 6
+    tries: number = 4,
 ): Promise<WeatherResponse | null> => {
     let tried = requestImpl(query);
     while (tried === null && query.easedLevel < tries) {
@@ -62,39 +63,6 @@ const requestImpl = (query: Query): [string, WeatherResponseType] | null => {
         query.lang || 'en'
     }`, base[1]] : null;
 };
-
-const arrayToUrl = (...array: Array<string | undefined>) => array.filter(s => s).join(',');
-
-const today = () => new Date();
-
-const daysAheadFromNow = (days: number) => {
-    const now = getDateWoTime(new Date());
-    now.setDate(now.getDate() + days);
-    return now;
-}
-
-const fourDaysFromNow = () => daysAheadFromNow(4);
-const fiveDaysFromNow = () => daysAheadFromNow(5);
-const sixteenDaysAhead = () => daysAheadFromNow(16);
-const thirtyDaysAhead = () =>  daysAheadFromNow(30);
-
-const isBetween = (from: Date, to: Date, query: Query) => from.getTime() <= query.from.getTime()
-    && to.getTime() >= query.from.getTime()
-    && from.getTime() <= query.to.getTime()
-    && to.getTime() >= query.to.getTime();
-
-const getDateWoTime = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-const compareDates = (...date: Date[]) => {
-    const first = date[0];
-    return date.reduce((p: boolean, c) => !p ? false : first.getTime() === c.getTime(), true);
-}
-
-const isDaily = (query: Query): boolean => compareDates(
-    getDateWoTime(today()),
-    getDateWoTime(query.from),
-    getDateWoTime(query.to)
-);
 
 const byDate = (query: Query): [string, WeatherResponseType] | null => {
     if (isBetween(today(), fourDaysFromNow(), query) && query.by === 'hour' && query.isPro) {
