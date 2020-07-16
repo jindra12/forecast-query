@@ -1,7 +1,7 @@
 import { Forecast, Result } from "../types";
 import { today, daysAheadFromNow, closestWeek } from "./util";
 
-const storageUnit: Storage & { stored: { [key: string]: Result } } = {
+const storageUnit: Storage & { stored: { [key: string]: Result[] } } = {
     stored: {},
     clear: () => {
         storageUnit.stored = {};

@@ -1,12 +1,16 @@
-import { Query, CityNameQuery, CityIdQuery, GeoApiQuery, ZipCodeQuery, CitiesIdQuery, WeatherResponse, WeatherResponseType } from "./request-types";
+import { Query, CityNameQuery, CityIdQuery, GeoApiQuery, ZipCodeQuery, CitiesIdQuery, WeatherResponseType } from "./request-types";
 import { today, fiveDaysFromNow, isBetween, fourDaysFromNow, sixteenDaysAhead, thirtyDaysAhead, isDaily, arrayToUrl } from "./util";
+import { UnifyApiResponse } from "./unification";
+import { Result } from "../types";
 
 export const request = async (
     query: Query,
     fetchImpl: (init: RequestInfo) => Promise<Response>,
+    cache: (url: string, contents: Result[]) => void,
+    cached: { [url: string]: Result[] },
     reportError: (e: any) => void,
     tries: number = 4,
-): Promise<WeatherResponse | null> => {
+): Promise<Result[] | null> => {
     let tried = requestImpl(query);
     while (tried === null && query.easedLevel < tries) {
         ease(query);
@@ -15,13 +19,17 @@ export const request = async (
     if (!tried) {
         return null;
     }
-
+    if (cached[tried[0]] !== undefined) {
+        return cached[tried[0]];
+    }
     try {
         const response = await fetchImpl(tried[0]);
         if (response.status === 200) {
             const json = await response.json();
             json.kind = tried[1];
-            return json;
+            const unified = UnifyApiResponse(json);
+            cache(tried[0], unified);
+            return unified;
         } else {
             reportError(response);
         }
