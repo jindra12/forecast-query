@@ -17,7 +17,7 @@ export interface ForecastQueries {
     tornado: () => Promise<Tornado | null>;
 
     day: () => Promise<Day>;
-    is: <T extends WeatherId | WeatherMain | undefined = undefined>(what?: T) => Promise<T extends undefined ? TypeOfWeather : TypeOfWeather | null>;
+    is: <T extends WeatherId | WeatherMain>(what?: T) => Promise<TypeOfWeather | null>;
     temp: (type?: 'exact' | 'feel' | 'max' | 'min') => Promise<number | null>;
     pressure: (type?: 'default' | 'ground' | 'sea') => Promise<number | null>;
     humidity: (from?: number, to?: number) => Promise<number | null>;

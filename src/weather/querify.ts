@@ -1,8 +1,8 @@
 import { ForecastInfo, ForecastQueries, Forecast, Result } from "../types";
-import { TypeOfWeather } from "./request-types";
+import { TypeOfWeather, WeatherMain, WeatherId } from "./request-types";
 
 export const querify = (forecast: ForecastInfo): Forecast => {
-    const getTypeOfWeather = async <T extends TypeOfWeather>(main: T["main"]): Promise<T | null> => (
+    const getTypeOfWeatherBy = async <T extends TypeOfWeather>(compare: (item: TypeOfWeather) => boolean): Promise<T | null> => (
         await forecast.result()
     ).reduce(
         (p: TypeOfWeather | null, c) => Boolean(p)
@@ -12,7 +12,7 @@ export const querify = (forecast: ForecastInfo): Forecast => {
                     ? p
                     : c.weather.reduce(
                         (p: TypeOfWeather | null, c) => Boolean(p)
-                            ? c.main === main ? c : p
+                            ? compare(c) ? c : p
                             : null,
                         null,
                     ),
@@ -20,6 +20,9 @@ export const querify = (forecast: ForecastInfo): Forecast => {
             ),
         null,
     ) as T | null;
+
+    const getTypeOfWeather = async <T extends TypeOfWeather>(main: T["main"]): Promise<T | null> => getTypeOfWeatherBy(c => c.main === main);
+    const getIdOfWeather = async <T extends TypeOfWeather>(id: T["id"]): Promise<T | null> => getTypeOfWeatherBy(c => c.id === id);
 
     const getMeasurement = async <T>(measure: (res: Result) => T): Promise<NonNullable<T> | null> => (
         await forecast.result()
@@ -89,8 +92,17 @@ export const querify = (forecast: ForecastInfo): Forecast => {
                     return res.wind.gust;
             }
         }),
-        is: what => {
-
+        is: async (what) => {
+            if (!what) {
+                return (await forecast.result()).find(res => res.weather.find(weather => weather.weather));
+            }
+            if (typeof what === 'string') {
+                return getTypeOfWeather(what as WeatherMain) as any;
+            }
+            if (typeof what === 'number') {
+                return getIdOfWeather(what as WeatherId) as any;
+            }
+            return null;
         },
     };
 
