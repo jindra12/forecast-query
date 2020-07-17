@@ -13,13 +13,18 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                 dt: res.dt,
                 humidity: undefined,
                 weather: [res],
-                rain: res.precipitation.mode === 'rain' ? { '1h': res.precipitation.value } : undefined,
+                rain: res.precipitation.mode === 'rain' ? { '1h': res.precipitation.value, '3h': 0 } : undefined,
                 pressure: undefined,
-                snow: res.precipitation.mode === 'snow' ? { '1h': res.precipitation.value } : undefined,
+                snow: res.precipitation.mode === 'snow' ? { '1h': res.precipitation.value, '3h': 0 } : undefined,
                 sunrise: response.city.sun.sunrise,
                 sunset: response.city.sun.sunset,
                 uvi: undefined,
                 visibility: res.visibility.value,
+                wind: {
+                    degree: res.wind.deg,
+                    speed: res.wind.speed,
+                    gust: res.wind.gust,
+                },
             }));
         case '16day':
         case '30day':
@@ -36,7 +41,12 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                 sunrise: res.sunrise,
                 sunset: res.sunrise,
                 uvi: res.uvi,
-                visibility: res.visibility
+                visibility: res.visibility,
+                wind: {
+                    speed: res.speed,
+                    degree: res.deg,
+                    gust: res.speed,
+                },
             }));
         case 'onecall':
             return [response.current, ...response.daily, ...response.hourly].map(res => ({
@@ -78,6 +88,11 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                 sunset: res.sunset,
                 uvi: res.uvi,
                 visibility: res.visibility,
+                wind: {
+                    degree: res.wind_deg,
+                    speed: res.wind_speed,
+                    gust: res.wind_speed,
+                }
             }));
     }
 };

@@ -18,8 +18,8 @@ export interface ForecastQueries {
 
     day: () => Promise<Day>;
     is: <T extends WeatherId | WeatherMain | undefined = undefined>(what?: T) => Promise<T extends undefined ? TypeOfWeather : TypeOfWeather | null>;
-    temp: (type?: 'exact' | 'feel' | 'max' | 'min', from?: number, to?: number) => Promise<number | null>;
-    pressure: (type?: 'default' | 'ground' | 'sea', from?: number, to?: number) => Promise<number | null>;
+    temp: (type?: 'exact' | 'feel' | 'max' | 'min') => Promise<number | null>;
+    pressure: (type?: 'default' | 'ground' | 'sea') => Promise<number | null>;
     humidity: (from?: number, to?: number) => Promise<number | null>;
     /**
      * Returns cloud percentage on the sky. Will return null if nothing is found
@@ -32,7 +32,7 @@ export interface ForecastQueries {
     /**
      * Returns percipitation by percent. Returns null if nothing is found
      */
-    precipitation: (mode?: 'rain' | 'snow') => Promise<number | null>;
+    precipitation: (mode?: 'rain' | 'snow', time?: '1h' | '3h') => Promise<number | null>;
     wind: (type?: 'speed' | 'degree' | 'gust') => Promise<number | null>;
     rain: (when?: '1h' | '3h') => Promise<number | null>;
     snow: (when?: '1h' | '3h') => Promise<number | null>;
@@ -44,7 +44,7 @@ export interface ForecastQueries {
 
 export interface ForecastInfo {
     in: (...value: (string[] | number[])) => Forecast;
-    at: (...value: (Date | number | string)[]) => Forecast;
+    at: (from: Date | string | number, to?: Date | string | number) => Forecast;
     around: (lat: number, lon: number) => Forecast;
     zip: (zip: string, country: Language) => Forecast;
     units: (units: 'metric' | 'imperial' | 'kelvin') => Forecast;
@@ -70,7 +70,7 @@ export interface ForecastInfo {
     fetchingFn: (request: RequestInfo) => Promise<Response>;
     storage: Storage;
     location: Locator;
-    dates: Date[];
+    dates: [Date, Date];
     reporter: (e: any) => void;
     unit?: 'metric' | 'imperial';
     lang: Language;
@@ -113,4 +113,12 @@ export interface Locator {
 export interface Result extends Partial<AdvancedApiPart> {
     weather: Weather[];
     address: Address;
+    wind: {
+        degree: number;
+        speed: number;
+        /**
+         * Fallback on this value is speed
+         */
+        gust: number;
+    }
 }

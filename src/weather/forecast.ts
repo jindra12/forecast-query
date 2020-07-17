@@ -110,8 +110,8 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             forec.location.set({ kind: 'geo', geo: { lat, lon } });
             return forec;
         },
-        at: (...dates) => {
-            forec.dates = dates.map(d => new Date(d)).sort((a, b) => a.getTime() - b.getTime());
+        at: (from, to) => {
+            forec.dates = [new Date(from), new Date(to || from)];
             return forec;
         },
         between: (from, to) => forec.at(from, to),
@@ -207,6 +207,12 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             if (forec.dates.length < 2) {
                 return forec.response;
             }
+            if (
+                forec.response.find(res => forec.dates[0].getTime() === res.dt)
+                    && forec.response.find(res => forec.dates[1].getTime() === res.dt)
+            ) {
+                return forec.response;
+            }
             const locationResolved = forec.location.get();
             let apiQuery: ApiQuery = {
                 appid: apiKey,
@@ -233,52 +239,52 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             );
             switch (locationResolved.kind) {
                 case 'geo':
-                    forec.response = await buildResponse({
+                    forec.response.push(...(await buildResponse({
                         ...apiQuery,
                         kind: 'geo',
                         lat: locationResolved.geo.lat,
                         lon: locationResolved.geo.lon,
-                    }) || [];
+                    }) || []));
                     break;
                 case 'id':
-                    forec.response = await buildResponse({
+                    forec.response.push(...(await buildResponse({
                         ...apiQuery,
                         kind: 'id',
                         cityId: locationResolved.id.toString(),
-                    }) || [];
+                    }) || []));
                     break;
                 case 'ids':
-                    forec.response = await buildResponse({
+                    forec.response.push(...(await buildResponse({
                         ...apiQuery,
                         kind: 'ids',
                         citiesId: locationResolved.ids.map(id => id.toString()),
-                    }) || [];                    
+                    }) || []));                    
                     break;
                 case 'place':
-                    forec.response = await buildResponse({
+                    forec.response.push(...(await buildResponse({
                         ...apiQuery,
                         kind: 'city',
                         cityName: locationResolved.place,
-                    }) || [];
+                    }) || []));
                     break;
                 case 'places':
-                    forec.response = await buildResponse({
+                    forec.response.push(...(await buildResponse({
                         ...apiQuery,
                         kind: 'city',
                         cityName: locationResolved.places.join(','),
-                    }) || [];
+                    }) || []));
                     break;
                 case 'zip':
-                    forec.response = await buildResponse({
+                    forec.response.push(...(await buildResponse({
                         ...apiQuery,
                         kind: 'zip',
                         zipCode: locationResolved.zip.code,
                         countryCode: locationResolved.zip.country,
-                    }) || [];
+                    }) || []));
                     break;
             }
 
-            return forec.response;
+            return forec.response.sort((a, b) => (a.dt || 0) - (b.dt || 0));
         },
     });
     return forec;

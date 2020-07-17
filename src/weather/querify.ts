@@ -1,8 +1,8 @@
-import { ForecastInfo, ForecastQueries, Forecast } from "../types";
-import { Ashy, TypeOfWeather, WeatherMain } from "./request-types";
+import { ForecastInfo, ForecastQueries, Forecast, Result } from "../types";
+import { TypeOfWeather } from "./request-types";
 
 export const querify = (forecast: ForecastInfo): Forecast => {
-    const getTypeOfWeather = async <T extends TypeOfWeather>(main: T["main"]): Promise<TypeOfWeather | null> => (
+    const getTypeOfWeather = async <T extends TypeOfWeather>(main: T["main"]): Promise<T | null> => (
         await forecast.result()
     ).reduce(
         (p: TypeOfWeather | null, c) => Boolean(p)
@@ -19,7 +19,19 @@ export const querify = (forecast: ForecastInfo): Forecast => {
                 null,
             ),
         null,
-    );
+    ) as T | null;
+
+    const getMeasurement = async <T>(measure: (res: Result) => T): Promise<NonNullable<T> | null> => (
+        await forecast.result()
+    ).map(measure).reduce(
+        (p: T | null, c) => {
+            if (c !== undefined && p === null) {
+                return c;
+            }
+            return p;
+        },
+        null,
+    ) as any;
 
     const queries: ForecastQueries = {
         ashy: async () => getTypeOfWeather('Ash') as any,
@@ -36,6 +48,50 @@ export const querify = (forecast: ForecastInfo): Forecast => {
         sandy: async () => getTypeOfWeather('Sand') as any,
         squally: async () => getTypeOfWeather('Squall') as any,
         tornado: async () => getTypeOfWeather('Tornado') as any,
+        day: async () => getTypeOfWeather(undefined) as any,
+        clouds: async () => getMeasurement(res => res.clouds),
+        humidity: async () => getMeasurement(res => res.humidity),
+        precipitation: async (mode, time) => getMeasurement(res => mode !== 'snow'
+            ? res.rain && res.rain[time || '1h']
+            : res.snow && res.snow[time || '1h']
+        ),
+        pressure: type => getMeasurement(res => !type || type === 'default' ? res.pressure : (
+            type === 'ground'
+                ? res.address.main.grnd_level
+                : res.address.main.sea_level
+        )),
+        rain: mode => getMeasurement(res => res.rain && res.rain[mode || '1h']),
+        snow: mode => getMeasurement(res => res.snow && res.snow[mode || '1h']),
+        sun: type => getMeasurement(res => (!type || type === 'rise')
+            ? new Date(res.sunrise || res.address.sun.sunrise)
+            : new Date(res.sunset || res.address.sun.sunset)
+        ),
+        temp: type => getMeasurement(res => {
+            switch(type || 'exact') {
+                case 'exact':
+                    return res.address.main.temp;
+                case 'feel':
+                    return res.address.main.feels_like;
+                case 'max':
+                    return res.address.main.temp_max;
+                case 'min':
+                    return res.address.main.temp_min;
+            }
+        }),
+        visibility: () => getMeasurement(res => res.visibility),
+        wind: type => getMeasurement(res => {
+            switch (type || 'speed') {
+                case 'speed':
+                    return res.wind.speed;
+                case 'degree':
+                    return res.wind.degree;
+                case 'gust':
+                    return res.wind.gust;
+            }
+        }),
+        is: what => {
+
+        },
     };
 
     return { ...forecast, ...queries };
