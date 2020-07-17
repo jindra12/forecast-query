@@ -1,10 +1,6 @@
-import { Rain, Clear, Clouds, Thunderstorm, Drizzle, Day, WeatherId, WeatherMain, TypeOfWeather, Smokey, Tornado, Misty, Hazey, Dusty, Foggy, Sandy, Ashy, Squally, WeatherIcon, Weather, AdvancedApiPart, Address } from "./weather/request-types";
+import { Rain, Clear, Clouds, Thunderstorm, Drizzle, Day, WeatherId, WeatherMain, TypeOfWeather, Smokey, Tornado, Misty, Hazey, Dusty, Foggy, Sandy, Ashy, Squally, WeatherIcon, Weather, AdvancedApiPart, Address, Language } from "./weather/request-types";
 
-export interface Forecast {
-    in: (...value: string[]) => Forecast;
-    at: (...value: (Date | number | string)[]) => Forecast;
-    around: (lat: number, lon: number) => Forecast;
-
+export interface ForecastQueries {
     rainy: () => Promise<Rain | null>;
     drizzle: () => Promise<Drizzle | null>;
     sunny: () => Promise<Clear | null>;
@@ -44,6 +40,15 @@ export interface Forecast {
      * Dates of sunrise or sundown
      */
     sun: (what?: 'rise' | 'down') => Promise<Date | null>;
+}
+
+export interface ForecastInfo {
+    in: (...value: (string[] | number[])) => Forecast;
+    at: (...value: (Date | number | string)[]) => Forecast;
+    around: (lat: number, lon: number) => Forecast;
+    zip: (zip: string, country: Language) => Forecast;
+    units: (units: 'metric' | 'imperial' | 'kelvin') => Forecast;
+    language: (lang: Language) => Forecast;
 
     today: (from?: 'now' | 'midnight') => Forecast;
     tomorrow: () => Forecast;
@@ -54,7 +59,8 @@ export interface Forecast {
     between: (from: Date | string | number, to: Date | string | number, by: 'day' | 'hour' | 'minute') => Forecast;
     hour: (which?: number) => Forecast;
 
-    result: () => Promise<Result>;
+    response: Result[];
+    result: () => Promise<Result[]>;
 
     /**
      * Get url to icon from openweathermap api
@@ -63,9 +69,11 @@ export interface Forecast {
 
     fetchingFn: (request: RequestInfo) => Promise<Response>;
     storage: Storage;
-    location: number[] | string[] | { lat: number, lon: number };
+    location: Locator;
     dates: Date[];
     reporter: (e: any) => void;
+    unit?: 'metric' | 'imperial';
+    lang: Language;
 
     /**
      * Can pass localStorage for caching. Can expire in an amount of mintues
@@ -74,12 +82,32 @@ export interface Forecast {
     storeClearTimeout?: number;
     fetch: (fn: (input: RequestInfo) => Promise<Response>) => Forecast;
     error: (reporter: (e: any) => void) => Forecast;
-    delay: (ms: number) => Forecast;
 
     /**
      * Creates a new instance of Forecast from this one
      */
     copy: () => Forecast;
+}
+
+export type Forecast = ForecastQueries & ForecastInfo;
+
+type KindOfLocator = { kind: 'places', places: string[] }
+    | { kind: 'place', place: string }
+    | { kind: 'ids', ids: number[] }
+    | { kind: 'id', id: number }
+    | { kind: 'geo', geo: { lat: number, lon: number } }
+    | { kind: 'zip', zip: { code: string, country: Language } };
+
+export interface Locator {
+    places?: string[];
+    ids?: number[];
+    geo?: { lat: number, lon: number };
+    zip?: { code: string, country: Language };
+    get: () => (
+        KindOfLocator
+        | { kind: 'nothing' }
+    );
+    set: (item: KindOfLocator) => Locator;
 }
 
 export interface Result extends Partial<AdvancedApiPart> {

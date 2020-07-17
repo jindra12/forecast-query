@@ -7,7 +7,7 @@ export const request = async (
     query: Query,
     fetchImpl: (init: RequestInfo) => Promise<Response>,
     cache: (url: string, contents: Result[]) => void,
-    cached: { [url: string]: Result[] },
+    cached: (url: string) => Result[] | null,
     reportError: (e: any) => void,
     tries: number = 4,
 ): Promise<Result[] | null> => {
@@ -19,8 +19,8 @@ export const request = async (
     if (!tried) {
         return null;
     }
-    if (cached[tried[0]] !== undefined) {
-        return cached[tried[0]];
+    if (cached(tried[0])) {
+        return cached(tried[0]);
     }
     try {
         const response = await fetchImpl(tried[0]);

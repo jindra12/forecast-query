@@ -1,5 +1,63 @@
-import { Forecast, Result } from "../types";
+import { Forecast, Result, Locator } from "../types";
 import { today, daysAheadFromNow, closestWeek } from "./util";
+import { request } from "./requests";
+import { Query, ApiQuery } from "./request-types";
+import { querify } from "./querify";
+
+const location = (): Locator => {
+    const loc: Locator = {
+        set: item => {
+            delete loc.geo;
+            delete loc.ids;
+            delete loc.places;
+            delete loc.zip;
+            switch (item.kind) {
+                case 'geo':
+                    loc.geo = item.geo;
+                    break;
+                case 'id':
+                    loc.ids = [item.id];
+                    break;
+                case 'ids':
+                    loc.ids = item.ids;
+                    break;
+                case 'place':
+                    loc.places = [item.place];
+                    break;
+                case 'places':
+                    loc.places = item.places;
+                    break;
+                case 'zip':
+                    loc.zip = item.zip;
+                    break;
+            }
+            return loc;
+        },
+        get: () => {
+            if (loc.geo) {
+                return { kind: 'geo', geo: loc.geo };
+            }
+            if (loc.ids && loc.ids.length === 1) {
+                return { kind: 'id', id: loc.ids[0] };
+            }
+            if (loc.ids && loc.ids.length > 1) {
+                return { kind: 'ids', ids: loc.ids };
+            }
+            if (loc.places && loc.places.length === 1) {
+                return { kind: 'place', place: loc.places[0] };
+            }
+            if (loc.places && loc.places.length > 1) {
+                return { kind: 'places', places: loc.places };
+            }
+            if (loc.zip) {
+                return { kind: 'zip', zip: loc.zip };
+            }
+            return { kind: 'nothing' };
+        }
+    };
+
+    return loc;
+};
 
 const storageUnit: Storage & { stored: { [key: string]: Result[] } } = {
     stored: {},
@@ -33,14 +91,23 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
     end.setMinutes(59);
     end.setSeconds(59);
 
-    const forec: Forecast = {
+    const forec: Forecast = querify({
         dates: [todayValue, end],
         storage: storageUnit,
-        location: ['Prague'],
+        location: location(),
+        lang: 'en',
+        language: lang => {
+            forec.lang = lang;
+            return forec;
+        },
+        units: unit => {
+            forec.unit = unit === 'kelvin' ? undefined : unit;
+            return forec;
+        },
         reporter: console.warn,
         fetchingFn: window.fetch,
         around: (lat, lon) => {
-            forec.location = { lat, lon };
+            forec.location.set({ kind: 'geo', geo: { lat, lon } });
             return forec;
         },
         at: (...dates) => {
@@ -48,13 +115,36 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             return forec;
         },
         between: (from, to) => forec.at(from, to),
-        copy: () => ({...forec}),
+        copy: () => {
+            const copy = { ...forec };
+            delete copy.storeClearTimeout;
+            return copy;
+        },
         fetch: fn => {
             forec.fetchingFn = fn;
             return forec;
         },
         in: (...places) => {
-            forec.location = places;
+            if (places.length > 0) {
+                if (typeof places[0] === 'string') {
+                    if (places.length > 1) {
+                        forec.location.set({ kind: 'places', places: places as string[] });
+                    } else {
+                        forec.location.set({ kind: 'place', place: places[0] as string });
+                    }
+                }
+                if (typeof places[0] === 'number') {
+                    if (places.length > 1) {
+                        forec.location.set({ kind: 'ids', ids: places as number[] });
+                    } else {
+                        forec.location.set({ kind: 'id', id: places[0] as number });
+                    }                    
+                }
+            }
+            return forec;
+        },
+        zip: (code, country) => {
+            forec.location.set({ kind: 'zip', zip: { code, country } });
             return forec;
         },
         error: reporter => {
@@ -109,10 +199,87 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                     clearInterval(forec.storeClearTimeout);
                 }
                 forec.storeClearTimeout = setInterval(forec.storage.clear, timeout * 60 * 1000) as any;
-            } 
+            }
             return forec;
         },
-        
-    };
+        response: [],
+        result: async () => {
+            if (forec.dates.length < 2) {
+                return forec.response;
+            }
+            const locationResolved = forec.location.get();
+            let apiQuery: ApiQuery = {
+                appid: apiKey,
+                isPro,
+                units: forec.unit,
+                lang: forec.lang,
+                from: forec.dates[0],
+                to: forec.dates[1],
+                by: isPro ? 'day' : 'hour',
+                easedLevel: 0,
+            };
+            const buildResponse = (query: Query) => request(
+                query,
+                forec.fetchingFn,
+                (url, contents) => forec.storage.setItem(url, JSON.stringify(contents)),
+                url => {
+                    const item = forec.storage.getItem(url);
+                    if (!item) {
+                        return null;
+                    }
+                    return JSON.parse(url);
+                },
+                forec.reporter,
+            );
+            switch (locationResolved.kind) {
+                case 'geo':
+                    forec.response = await buildResponse({
+                        ...apiQuery,
+                        kind: 'geo',
+                        lat: locationResolved.geo.lat,
+                        lon: locationResolved.geo.lon,
+                    }) || [];
+                    break;
+                case 'id':
+                    forec.response = await buildResponse({
+                        ...apiQuery,
+                        kind: 'id',
+                        cityId: locationResolved.id.toString(),
+                    }) || [];
+                    break;
+                case 'ids':
+                    forec.response = await buildResponse({
+                        ...apiQuery,
+                        kind: 'ids',
+                        citiesId: locationResolved.ids.map(id => id.toString()),
+                    }) || [];                    
+                    break;
+                case 'place':
+                    forec.response = await buildResponse({
+                        ...apiQuery,
+                        kind: 'city',
+                        cityName: locationResolved.place,
+                    }) || [];
+                    break;
+                case 'places':
+                    forec.response = await buildResponse({
+                        ...apiQuery,
+                        kind: 'city',
+                        cityName: locationResolved.places.join(','),
+                    }) || [];
+                    break;
+                case 'zip':
+                    forec.response = await buildResponse({
+                        ...apiQuery,
+                        kind: 'zip',
+                        zipCode: locationResolved.zip.code,
+                        countryCode: locationResolved.zip.country,
+                    }) || [];
+                    break;
+            }
+
+            return forec.response;
+        },
+    });
     return forec;
 };
