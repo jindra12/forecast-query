@@ -1,212 +1,161 @@
+import { Weather, Language } from "./derived-request-types";
 
-export type Language = 'af'
-	| 'al'
-	| 'ar'
-	| 'az'
-	| 'bg'
-	| 'ca'
-	| 'cz'
-	| 'da'
-	| 'de'
-	| 'el'
-	| 'en'
-	| 'eu'
-	| 'fa'
-	| 'fi'
-	| 'fr'
-	| 'gl'
-	| 'he'
-	| 'hi'
-	| 'hr'
-	| 'hu'
-	| 'id'
-	| 'it'
-	| 'ja'
-	| 'kr'
-	| 'la'
-	| 'lt'
-	| 'mk'
-	| 'no'
-	| 'nl'
-	| 'pl'
-	| 'pt'
-	| 'pt_br'
-	| 'ro'
-	| 'ru'
-	| 'sv'
-	| 'se'
-	| 'sk'
-	| 'sl'
-	| 'sp'
-	| 'es'
-	| 'sr'
-	| 'th'
-	| 'tr'
-	| 'ua'
-	| 'uk'
-	| 'vi'
-	| 'zh_cn'
-	| 'zh_tw'
-	| 'zu';
-
-interface ThunderstormType {
-	main: 'Thunderstorm',
-	icon: '11d',
-}
-
-export type Thunderstorm = ThunderstormType & ({ id: 200, description: 'thunderstorm with light rain' }
-	| { id: 201, description: 'thunderstorm with rain' }
-	| { id: 202, description: 'thunderstorm with heavy rain' }
-	| { id: 210, description: 'light thunderstorm' }
-	| { id: 211, description: 'thunderstorm' }
-	| { id: 212, description: 'heavy thunderstorm' }
-	| { id: 221, description: 'ragged thunderstorm' }
-	| { id: 230, description: 'thunderstorm with light drizzle' }
-	| { id: 231, description: 'thunderstorm with drizzle' }
-	| { id: 232, description: 'thunderstorm with heavy drizzle' });
-
-interface DrizzleType {
-	main: 'Drizzle',
-	icon: '09d',
-}
-
-export type Drizzle = DrizzleType & ({ id: 300, description: 'light intensity drizzle' }
-	| { id: 301, description: 'drizzle' }
-	| { id: 302, description: 'heavy intensity drizzle' }
-	| { id: 310, description: 'light intensity drizzle rain' }
-	| { id: 311, description: 'drizzle rain' }
-	| { id: 312, description: 'heavy intensity drizzle rain' }
-	| { id: 313, description: 'shower rain and drizzle' }
-	| { id: 314, description: 'heavy shower rain and drizzle' }
-	| { id: 321, description: 'shower drizzle' });
-
-export type Clear = { id: 800, main: 'Clear', description: 'clear sky', icon: '01d' | '01n' };
-
-export type Clouds = { id: 801, main: 'Clouds', description: 'few clouds: 11-25%', icon: '02d' | '02n' }
-	| { id: 802, main: 'Clouds', description: 'scattered clouds: 25-50%', icon: '03d' | '03n' }
-	| { id: 803, main: 'Clouds', description: 'broken clouds: 51-84%', icon: '04d' | '04n' }
-	| { id: 804, main: 'Clouds', description: 'overcast clouds: 85-100%', icon: '04d' | '04n' };
-
-export type Rain = { id: 500, main: 'Rain', description: 'light rain', icon: '10d' }
-	| { id: 500, main: 'Rain', description: 'light rain', icon: '10d' }
-	| { id: 501, main: 'Rain', description: 'moderate rain', icon: '10d' }
-	| { id: 502, main: 'Rain', description: 'heavy intensity rain', icon: '10d' }
-	| { id: 503, main: 'Rain', description: 'very heavy rain', icon: '10d' }
-	| { id: 504, main: 'Rain', description: 'extreme rain', icon: '10d' }
-	| { id: 511, main: 'Rain', description: 'freezing rain', icon: '13d' }
-	| { id: 520, main: 'Rain', description: 'light intensity shower rain', icon: '09d' }
-	| { id: 521, main: 'Rain', description: 'shower rain', icon: '09d' }
-	| { id: 522, main: 'Rain', description: 'heavy intensity shower rain', icon: '09d' }
-	| { id: 531, main: 'Rain', description: 'ragged shower rain', icon: '09d' };
-
-
-interface AtmosphereType {
-	icon: '50d',
-}
-
-export interface Misty { id: 701, main: 'Mist', description: 'mist' }
-export interface Smokey { id: 711, main: 'Smoke', description: 'Smoke' }
-export interface Hazey { id: 721, main: 'Haze', description: 'Haze' }
-export interface DustyWhirls { id: 731, main: 'Dust', description: 'sand/ dust whirls' }
-export interface Foggy { id: 741, main: 'Fog', description: 'fog' }
-export interface Sandy { id: 751, main: 'Sand', description: 'sand' }
-export interface Dusty { id: 761, main: 'Dust', description: 'dust' }
-export interface Ashy { id: 762, main: 'Ash', description: 'volcanic ash' }
-export interface Squally { id: 771, main: 'Squall', description: 'squalls' }
-export interface Tornado { id: 781, main: 'Tornado', description: 'tornado' }
-
-export type Atmosphere = AtmosphereType & (
-	Misty
-	| Smokey
-	| Hazey
-	| DustyWhirls
-	| Foggy
-	| Sandy
-	| Dusty
-	| Ashy
-	| Squally
-	| Tornado);
-
-interface DayType {
-	id: undefined;
-	main: undefined;
-}
-
-export type Day = DayType & ({ description: 'clear sky', icon: '01d.png' | '01n.png' }
-	| { description: 'few clouds', icon: '02d.png' | '02n.png' }
-	| { description: 'scattered clouds', icon: '03d.png' | '03n.png' }
-	| { description: 'broken clouds', icon: '04d.png' | '04n.png' }
-	| { description: 'shower rain', icon: '09d.png' | '09n.png' }
-	| { description: 'rain', icon: '10d.png' | '10n.png' }
-	| { description: 'thunderstorm', icon: '11d.png' | '11n.png' }
-	| { description: 'snow', icon: '13d.png' | '13n.png' }
-	| { description: 'mist', icon: '50d.png' | '50n.png' });
-
-
-export type TypeOfWeather = Thunderstorm | Drizzle | Clear | Clouds | Rain | Atmosphere | Day;
-
-export type WeatherId = TypeOfWeather['id'];
-export type WeatherDescription = TypeOfWeather['description'];
-export type WeatherMain = TypeOfWeather['main'];
-export type WeatherIcon = TypeOfWeather['icon'];
-
-export interface Response {
-	temp: number;
-	feels_like: number;
-	temp_min: number;
-	temp_max: number;
-	pressure: number;
+/**
+ * Source: https://openweathermap.org/api/hourly-forecast
+ */
+export interface HourlyForecast {
 	/**
-	 * Atmospheric pressure on sea level
-	 */
-	sea_level: number;
-	/**
-	 * Atmosperic pressure on ground level
-	 */
-	grnd_level: number;
-	humidity: number;
+	 *  Response code
+	 */ 
+	code: string;
 	/**
 	 * Internal parameter
 	 */
-	temp_kf: number;
-}
-
-export interface ListOfWeatherApi {
-	
-}
-
-export interface Weather {
+	message: string;
+    city: {
+        id: string; 
+        name: string;
+        coord: {
+			lat: number;
+			lon: number;			
+		}
+	};
+    country: Language;
+	population: number;
 	/**
-	 * UTC time
+	 * Shift in seconds from UTC
 	 */
-	dt: number;
-	weather: TypeOfWeather[];
-	clouds: {
+	timezone: number;
+	/**
+	 * Sunrise time, unix, UTC
+	 */
+	sunrise: number;
+	/**
+	 * Sunset time, unix, UTC
+	 */
+	sunset: number;
+	/**
+	 * Number of timestamps returned by this API call
+	 */ 
+    cnt: number;
+    list: {
 		/**
-		 * How cloudy it is by percentage
+		 * Time of data forecasted, unix, UTC
 		 */
-		all: number
+		dt: number;
+        main: {
+			/**
+			 * Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
+			 */
+			temp: number;
+			/**
+			 * This temperature parameter accounts for the human perception of weather.
+			 */
+			feels_like: number;
+			temp_min: number;
+			temp_max: number;
+			pressure: number;
+			/**
+			 * Pressure at sea level
+			 */
+			sea_level: number;
+			/**
+			 * Pressure at ground level
+			 */
+			grnd_level: number;
+			/**
+			 * Percentage
+			 */
+			humidity: number;
+			weather: Weather[];
+			/**
+			 * Percentage
+			 */
+			clouds: number;
+			wind: {
+				/**
+				 * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
+				 */
+				speed: number;
+				/**
+				 * Which way the wind is blowing
+				 */ 
+				deg: number;
+			};
+			rain: {
+				/**
+				 * Rain volume for the past hour, mm
+				 */
+				'1h': number;
+			};
+			snow: {
+				/**
+				 * Snow volume for the past hour, mm
+				 */
+				'1h': number;
+			}
+			/**
+			 * Part of the day (n - night, d - day)
+			 */
+			sys: string;
+		}
+	}
+};
+
+export interface DailyForecast {
+    coord: {
+		lon: number;
+		lat: number;
 	};
-	visibility: {
+	weather: Weather[];
+	/**
+	 * Internal parameter
+	 */
+	base: string;
+	main: {
+		temp: number;
 		/**
-		 * Visibility in percent
+		 * This temperature parameter accounts for the human perception of weather.
 		 */
-		value: number
-	};
-	precipitation: {
-		value: number;
-		mode: 'no' | 'rain' | 'snow';
+		feels_like: number;
+		/**
+		 * hPa
+		 */
+		pressure: number;
+		/**
+		 * Percentage
+		 */
+		humidity: number;
+		temp_min: number;
+		temp_max: number;
+		/**
+		 * Pressure at sea level
+		 */
+		sea_level: number;
+		/**
+		 * Pressure on ground level
+		 */
+		grnd_level: number;
 	};
 	wind: {
+		/**
+		 * Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
+		 */
 		speed: number;
 		/**
-		 * Direction
+		 * Wind direction, degrees (meteorological)
 		 */
 		deg: number;
 		/**
-		 * Gust speed
+		 * Wind gust. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour
 		 */
-		gust: number;
+		gust: number
+	};
+	clouds: {
+		/**
+		 * Cloudiness, %
+		 */
+		all: number;
 	};
 	rain: {
 		/**
@@ -229,208 +178,509 @@ export interface Weather {
 		'3h': number;
 	};
 	/**
-	 * Internal parameters
+	 * UTC datetime
 	 */
-	sys: object;
-	/**
-	 * Date time params in string
-	 */
-	dt_txt: string;
-}
-
-export interface Address {
-	id: number;
-	/**
-	 * e.g. London, Prague
-	 */
-	name: string;
-	coord: {
-		lat: number;
-		lon: number;
-	};
-	country: string;
-	population: number;
-	/**
-	 * Data like temperature or pressure
-	 */
-	main: Response;
-	/**
-	 * UTC
-	 */
-	timezone: number;
-	/**
-	 * Sunrise / sunset UTCs
-	 */
-	sun: {
+	dt: number;
+    sys: {
+		type: string;
+		id: string;
+		messag: string;
+		country: Language;
 		/**
-		 * UTC milis time
+		 * UTC time
 		 */
 		sunrise: number;
 		/**
-		* UTC milis time
-		*/
+		 * UTC time
+		 */
 		sunset: number;
-	}
-}
-
-export interface Header {
+	};
 	/**
-	 * Response code
+	 * UTC shift in seconds
 	 */
-	cod: number,
+	timezone: number;
+	/**
+	 * City id
+	 */
+	id: number;
+	/**
+	 * City name
+	 */
+	name: string;
+};
+
+export interface FiveDayForecast {
 	/**
 	 * Internal parameter
 	 */
-	message: number,
+	code: string;
 	/**
-	 * Number of timestamps returned by this API call 
+	 * Internal parameter
 	 */
-	cnt: number,
-}
-
-/**
- * Source: https://openweathermap.org/current
- */
-export interface DailyForecast extends Header {
+    message: string;
+    city: {
+        id: number;
+        name: string;
+        coord: {
+			lat: number;
+			lon: number;
+		};
+		country: Language;
+		/**
+		 * UTC shift in seconds
+		 */
+        timezone: number;
+	};
 	/**
-	 * Weather response
+	 * Number of lines returned by this API call
 	 */
-	list: Weather[];
-	city: Address;
-}
-
-/**
- * Source: https://openweathermap.org/forecast5
- */
-export interface FiveDayForecast extends Header {
-	/**
-	 * Weather response
-	 */
-	list: Weather[];
-	city: Address;
-}
-
-/**
- * https://openweathermap.org/forecast16
- */
-export interface SixteenDayForecast extends Header {
-	city: Address,
-	list: ExtendedLongDaysForecastPart[],
-}
-
-/**
- * https://openweathermap.org/api/forecast30
- */
-export interface ThirtyDayForecast extends Header {
-	city: Address,
-	list: ExtendedLongDaysForecastPart[],
-}
-
-export interface AdvancedApiPart {
-	dt: number;
-	/**
-	 * UTC time
-	 */
-	sunrise: number;
-	/**
-	 * UTC time
-	 */
-	sunset: number;
-	pressure: number;
-	humidity: number;
-	dew_point: number;
-	uvi: number;
-	clouds: number;
-	visibility: number;
-	weather: Weather[],
-	rain: {
-		"1h": number;
-		"3h": number;
-	},
-	snow: {
-		"1h": number;
-		"3h": number;
+    cnt: number;
+    list: {
+		/**
+		 * Time of data forecasted, unix, UTC
+		 */
+		dt: number;
+		main: {
+			/**
+			 * Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
+			 */
+			temp: number; 
+			/**
+			 * Temperature. This temperature parameter accounts for the human perception of weather. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
+			 */
+            feels_like: number;
+            temp_min: number;
+			temp_max: number;
+			/**
+			 * Atmospheric pressure on the sea level by default, hPa
+			 */
+			pressure: number;
+			/**
+			 * Atmospheric pressure on the sea level, hPa
+			 */
+			sea_level: number;
+			/**
+			 * Ground level pressure
+			 */
+			grnd_level: number;
+			/**
+			 * Humidity, %
+			 */
+            humidity: number;
+		};
+		weather: Weather[];
+		clouds: {
+			/**
+			 * By precentage
+			 */
+			all: number;
+		};
+        wind: {
+			/**
+			 * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
+			 */
+			speed: number;
+			/**
+			 * Wind direction, degrees (meteorological)
+			 */
+			deg: number;
+		};
+        rain: {
+			/**
+			 * Rain volume for last 3 hours, mm
+			 */
+			'3h': number;
+		};
+		snow: {
+			/**
+			 * Snow volume for last 3 hours
+			 */
+			'3h': number;
+		};
 	}
 }
 
-export interface ExtendedLongDaysForecastPart extends AdvancedApiPart {
-	/**
-	 * Speed at which the wind is blowing
-	 */
-	speed: number;
-	/**
-	 * Degree of gust of wind
-	 */
-	deg: number;
-}
-
-export interface OneCallApiPart extends AdvancedApiPart {
-	wind_speed: number;
-	wind_deg: number;
-}
-
-export interface OneCallApiStandart {
-	dt: number;
-	temp: number;
-	/**
-	 * Temperature feeling
-	 */
-	feels_like: number;
-}
-
-export interface OneCallApiExtended {
-	dt: number;
-	temp: {
-		day: number;
-		min: number;
-		max: number;
-		night: number;
-		eve: number;
-		morn: number;
+export interface SixteenDayForecast {
+    city: {
+		id: number;
+		name: string;
+		coords: {
+			lat: number;
+			lon: number;
+		};
 	};
-	feels_like: {
-		day: number;
-		night: number;
-		eve: number;
-		morn: number;
+	country: Language;
+	/**
+	 * Shift in seconds from UTC
+	 */
+	timezone: number;
+	cod: number;
+	message: string;
+	/**
+	 * Number of lines returned by this API call
+	 */
+	cnt: number;
+    list: {
+		/**
+		 * Time of data forecasted
+		 */
+        dt: number;
+        temp: {
+			day: number;
+			min: number;
+			max: number;
+			night: number;
+			eve: number;
+			morn: number;
+		};
+		/**
+		 * Human feeling of temperature
+		 */
+        feels_like: {
+            day: number;
+            night: number;
+            eve: number;
+            morn: number;
+		};
+		/**
+		 * Atmospheric pressure on the sea level, hPa
+		 */
+		pressure: number;
+		/**
+		 * Humidity, %
+		 */
+        humidity: number;
+		weather: Weather;
+		/**
+		 * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
+		 */
+		speed: number;
+		/**
+		 * Wind direction, degrees (meteorological)
+		 */
+		deg: number;
+		/**
+		 * Cloudiness, %
+		 */
+		clouds: number;
+		/**
+		 * Precipitation volume, mm
+		 */
+		rain: number;
+		/**
+		 * Snow volume, mm
+		 */
+        snow: number;
 	};
+}
+
+export interface ThirtyDayForecast {
+    city: {
+        id: number;
+        name: number;
+        coord: {
+            lat: number;
+            lon: number;
+        }
+    }
+    country: Language;
+    population: number;
+    /**
+     * Shift in seconds from UTC
+     */
+    timezone: number;
+    cod: number;
+    message: string;
+    list: {
+        /**
+         * Time of data forecasted
+         */
+        dt: number;
+        /**
+         * Sunrise time, Unix, UTC
+         */
+        sunrise: number;
+        /**
+         * Sunset time, Unix, UTC
+         */
+        sunset: number;
+        temp: {
+            day: number;
+            min: number;
+            max: number;
+            night: number;
+            eve: number;
+            morn: number;
+        };
+        /**
+         * This temperature parameter accounts for the human perception of weather.
+         */
+        feels_like: {
+            day: number;
+            night: number;
+            eve: number;
+            morn: number;
+        };
+        /**
+         * Atmospheric pressure on the sea level, hPa
+         */
+        pressure: number;
+        /**
+         * Humidity, %
+         */
+        humidity: number;
+        weather: Weather[];
+        /**
+         * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
+         */
+        speed: number;
+        /**
+         * Wind direction, degrees (meteorological)
+         */
+        deg: number;
+        /**
+         * Cloudiness, %
+         */
+        clouds: number;
+        /**
+         * Precipitation volume, mm
+         */
+        rain: number;
+        /**
+         * Snow volume, mm
+         */
+        snow: number;
+        /**
+         * Number of lines returned by this API call
+         */
+        cnt: number;
+    };
 }
 
 export interface OneCallApi {
-	lat: number;
-	lon: number;
-	timezone: "America/Chicago",
-	timezone_offset: number;
-	current: OneCallApiPart & OneCallApiExtended,
-	/**
-	 * Never filled, TODO: add support for minute API if necessary
-	 */
-	minutely: (OneCallApiPart & OneCallApiStandart)[];
-	/**
-	 * Hourly temp updates
-	 */
-	hourly: (OneCallApiPart & OneCallApiStandart)[];
-	/**
-	 * Daily temp updates
-	 */
-	daily: (OneCallApiPart & OneCallApiExtended)[],
+    /**
+     * Geographical coordinates of the location (latitude)
+     */
+    lat: number;
+    /**
+     * Geographical coordinates of the location (longitude)
+     */
+    lon: number;
+    /**
+     * Timezone name for the requested location
+     */
+    timezone: string;
+    /**
+     * Shift in seconds from UTC
+     */
+    timezone_offset: number;
+    /**
+     * Current weather data API response
+     */
+    current: {
+        /**
+         * Current time, Unix, UTC
+         */
+        dt: number;
+        /**
+         * Sunrise time, Unix, UTC
+         */
+        sunrise: number;
+        /**
+         * Sunset time, Unix, UTC
+         */
+        sunset: number;
+        /**
+         * Temperature. Units - default: kelvin, metric: Celsius, imperial: Fahrenheit.
+         */
+        temp: number;
+        /**
+         * This temperature parameter accounts for the human perception of weather.
+         */
+        feels_like: number;
+        /**
+         * Atmospheric pressure on the sea level, hPa
+         */
+        pressure: number;
+        /**
+         * Humidity, %
+         */
+        humidity: number;
+        /**
+         * AAtmospheric temperature (varying according to pressure and humidity)
+         */
+        dew_point: number;
+        /**
+         * Cloudiness, %
+         */
+        clouds: number;
+        /**
+         * UV index
+         */
+        uvi: number;
+        /**
+         * Average visibility, metres
+         */
+        visibility: number;
+        /**
+         * Wind speed. Wind speed. Units – default: metre/sec, metric: metre/sec, imperial: miles/hour. How to change units used
+         */
+        wind_speed: number;
+        /**
+         * (where available) Wind gust. Units – default: metre/sec, metric: metre/sec, imperial: miles/hour. How to change units used
+         */
+        wind_gust?: number;
+        /**
+         *  Wind direction, degrees (meteorological)
+         */
+        wind_deg: number;
+        rain: {
+            /**
+             * (where available) Rain volume for last hour, mm
+             */
+            '1h': number;
+        };
+        snow: {
+            /**
+             * (where available) Snow volume for last hour, mm
+             */
+            '1h': number; 
+        };
+            
+        weather: Weather[];
+    };
+
+    hourly: {
+        dt: number;
+        temp: number;
+        /**
+         * This accounts for the human perception of weather.
+         */
+        feels_like: number;
+        /**
+         * Atmospheric pressure on the sea level, hPa
+         */
+        pressure: number;
+        /**
+         * Humidity, %
+         */
+        humidity: number;
+        /**
+         * Atmospheric temperature (varying according to pressure and humidity)
+         */
+        dew_point: number;
+        /**
+         * Cloudiness, %
+         */
+        clouds: number;
+        /**
+         * Average visibility, metres
+         */
+        visibility: number;
+        /**
+         * Units – default: metre/sec, metric: metre/sec, imperial: miles/hour.How to change units used
+         */
+        wind_speed: number;
+        /**
+         * (where available) Wind gust. Units – default: metre/sec, metric: metre/sec, imperial: miles/hour. How to change units used
+         */
+        wind_gust?: number;
+        /**
+         * Wind direction, degrees (meteorological)
+         */
+        wind_deg: number;
+        rain: {
+            /**
+             * (where available) Rain volume for last hour, mm
+             */
+            '1h'?: number;
+        };
+        snow: {
+            /**
+             * (where available) Snow volume for last hour, mm
+             */
+            '1h'?: number;
+        };
+        weather: Weather[];
+    }
+
+    /**
+     * Daily forecast weather data API response
+     */
+    daily: {
+        /**
+         * Time of the forecasted data, Unix, UTC
+         */
+        dt: number;
+        /**
+         * Sunrise time, Unix, UTC
+         */
+        sunrise: number;
+        /**
+         * Sunset time, Unix, UTC
+         */
+        sunset: number;
+        temp: {
+            morn: number;
+            day: number;
+            eve: number;
+            night: number;
+            min: number;
+            max: number;
+        };
+        /**
+         * This accounts for the human perception of weather.
+         */
+        feels_like: {
+            morn: number;
+            day: number;
+            eve: number;
+            night: number;
+        };
+        /**
+         * Atmospheric pressure on the sea level, hPa
+         */
+        pressure: number;
+        /**
+         * Humidity, %
+         */
+        humidity: number;
+        /**
+         * Atmospheric temperature (varying according to pressure and humidity) below which water droplets begin to condense and dew can form. Units – default: kelvin, metric: Celsius, imperial: Fahrenheit.
+         */
+        dew_point: number;
+        wind_speed: number;
+        /**
+         * (where available)
+         */
+        wind_gust: number;
+        /**
+         * Wind direction, degrees (meteorological)
+         */
+        wind_deg: number;
+        /**
+         * Cloudiness, %
+         */
+        clouds: number;
+        /**
+         * Midday UV index
+         */
+        uvi: number;
+        /**
+         * Average visibility, metres
+         */
+        visibility: number;
+        /**
+         * (where available) Precipitation volume, mm
+         */
+        rain: number;
+        /**
+         * (where available) Snow volume, mm
+         */
+        snow: number;
+        weather: Weather[];
+    }
 }
-
-
-
-
-/**
- * Source: https://openweathermap.org/api/hourly-forecast
- */
-export interface HourlyForecast extends Header {
-	/**
-	 * Weather response
-	 */
-	list: Weather[],
-	city: Address,
-};
-
-export type WeatherResponseType = 'hourly' | 'daily' | '5day' |  '16day' | '30day' | 'onecall';
 
 export type WeatherResponse = (HourlyForecast & { kind: 'hourly' })
 	| (DailyForecast & { kind: 'daily' })
@@ -438,45 +688,3 @@ export type WeatherResponse = (HourlyForecast & { kind: 'hourly' })
 	| (SixteenDayForecast & { kind: '16day' })
 	| (ThirtyDayForecast & { kind: '30day' })
 	| (OneCallApi & { kind: 'onecall' });
-
-export interface ApiQuery {
-	appid: string;
-	from: Date;
-	to: Date;
-	by: 'day' | 'hour';
-	easedLevel: number;
-	isPro?: boolean;
-	units?: 'metric' | 'imperial';
-	lang?: Language;
-}
-
-export interface CityNameQuery {
-	cityName: string;
-	stateCode?: string;
-	countryCode?: string;
-	kind: 'city';
-}
-
-export interface CityIdQuery {
-	cityId: string;
-	kind: 'id';
-}
-
-export interface CitiesIdQuery {
-	citiesId: string[];
-	kind: 'ids';
-}
-
-export interface GeoApiQuery {
-	lat: number;
-	lon: number;
-	kind: 'geo';
-}
-
-export interface ZipCodeQuery {
-	zipCode: string;
-	countryCode?: string;
-	kind: 'zip';
-}
-
-export type Query = ApiQuery & (CityNameQuery | CityIdQuery | CitiesIdQuery | GeoApiQuery | ZipCodeQuery);

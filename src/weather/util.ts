@@ -1,4 +1,4 @@
-import { Query } from "./request-types";
+import { Query } from "./derived-request-types";
 
 export const arrayToUrl = (...array: Array<string | undefined>) => array.filter(s => s).join(',');
 

@@ -1,7 +1,7 @@
 import { Forecast, Result, Locator } from "../types";
 import { today, daysAheadFromNow, closestWeek } from "./util";
 import { request } from "./requests";
-import { Query, ApiQuery } from "./request-types";
+import { Query, ApiQuery } from "./derived-request-types";
 import { querify } from "./querify";
 
 const location = (): Locator => {
