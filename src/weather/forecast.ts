@@ -210,8 +210,8 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                 return forec.response;
             }
             if (
-                forec.response.find(res => forec.dates[0].getTime() >= (res.dt || 0))
-                    && forec.response.find(res => forec.dates[1].getTime() <= (res.dt || 0))
+                forec.response.find(res => forec.dates[0].getTime() >= (res.weather.dt || 0))
+                    && forec.response.find(res => forec.dates[1].getTime() <= (res.weather.dt || 0))
             ) {
                 return forec.response;
             }
@@ -285,7 +285,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                     }) || []));
                     break;
             }
-            return forec.response.sort((a, b) => (a.dt || 0) - (b.dt || 0));
+            return forec.response.sort((a, b) => (a.weather.dt || 0) - (b.weather.dt || 0));
         },
     });
     return forec;

@@ -1,4 +1,4 @@
-import { Weather, Language, TypeOfWeather, LongForecastListItem } from "./derived-request-types";
+import { Language, TypeOfWeather, LongForecastListItem } from "./derived-request-types";
 
 /**
  * Source: https://openweathermap.org/api/hourly-forecast

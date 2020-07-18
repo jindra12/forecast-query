@@ -1,4 +1,4 @@
-import { Rain, Clear, Clouds, Thunderstorm, Drizzle, Day, WeatherId, WeatherMain, TypeOfWeather, Smokey, Tornado, Misty, Hazey, Dusty, Foggy, Sandy, Ashy, Squally, WeatherIcon, Weather, AdvancedApiPart, Address, Language } from "./weather/derived-request-types";
+import { Rain, Clear, Clouds, Thunderstorm, Drizzle, Day, WeatherId, WeatherMain, TypeOfWeather, Smokey, Tornado, Misty, Hazey, Dusty, Foggy, Sandy, Ashy, Squally, WeatherIcon, Weather, Address, Language } from "./weather/derived-request-types";
 
 export interface ForecastQueries {
     rainy: () => Promise<Rain | null>;
