@@ -4,22 +4,17 @@ import { TypeOfWeather, WeatherMain, WeatherId } from "./derived-request-types";
 export const querify = (forecast: ForecastInfo): Forecast => {
     const getTypeOfWeatherBy = async <T extends TypeOfWeather>(compare: (item: TypeOfWeather) => boolean): Promise<T | null> => (
         await forecast.result()
-    ).reduce(
-        (p: TypeOfWeather | null, c) => Boolean(p)
-            ? p
-            : c.weather.reduce(
-                (p: TypeOfWeather | null, c) => Boolean(p)
-                    ? p
-                    : c.weather.reduce(
-                        (p: TypeOfWeather | null, c) => Boolean(p)
-                            ? compare(c) ? c : p
-                            : null,
-                        null,
-                    ),
-                null,
-            ),
-        null,
-    ) as T | null;
+    ).reduce((p: TypeOfWeather | null, c) => {
+        if (Boolean(p)) {
+            return p;
+        }
+        return c.weather.weather.reduce((p: TypeOfWeather | null, c) => {
+            if (Boolean(p)) {
+                return p;
+            }
+            return compare(c) ? c : p;
+        }, null)
+    }, null) as T;
 
     const getTypeOfWeather = async <T extends TypeOfWeather>(main: T["main"]): Promise<T | null> => getTypeOfWeatherBy(c => c.main === main);
     const getIdOfWeather = async <T extends TypeOfWeather>(id: T["id"]): Promise<T | null> => getTypeOfWeatherBy(c => c.id === id);
@@ -52,22 +47,22 @@ export const querify = (forecast: ForecastInfo): Forecast => {
         squally: async () => getTypeOfWeather('Squall') as any,
         tornado: async () => getTypeOfWeather('Tornado') as any,
         day: async () => getTypeOfWeather(undefined) as any,
-        clouds: async () => getMeasurement(res => res.clouds),
-        humidity: async () => getMeasurement(res => res.humidity),
+        clouds: async () => getMeasurement(res => res.weather.clouds.all),
+        humidity: async () => getMeasurement(res => res.address.main.humidity),
         precipitation: async (mode, time) => getMeasurement(res => mode !== 'snow'
-            ? res.rain && res.rain[time || '1h']
-            : res.snow && res.snow[time || '1h']
+            ? res.weather.rain[time || '1h']
+            : res.weather.snow[time || '1h']
         ),
-        pressure: type => getMeasurement(res => !type || type === 'default' ? res.pressure : (
+        pressure: type => getMeasurement(res => !type || type === 'default' ? res.address.main.pressure : (
             type === 'ground'
                 ? res.address.main.grnd_level
                 : res.address.main.sea_level
         )),
-        rain: mode => getMeasurement(res => res.rain && res.rain[mode || '1h']),
-        snow: mode => getMeasurement(res => res.snow && res.snow[mode || '1h']),
+        rain: mode => getMeasurement(res => res.weather.rain && res.weather.rain[mode || '1h']),
+        snow: mode => getMeasurement(res => res.weather.snow && res.weather.snow[mode || '1h']),
         sun: type => getMeasurement(res => (!type || type === 'rise')
-            ? new Date(res.sunrise || res.address.sun.sunrise)
-            : new Date(res.sunset || res.address.sun.sunset)
+            ? new Date(res.address.sun.sunrise)
+            : new Date(res.address.sun.sunset)
         ),
         temp: type => getMeasurement(res => {
             switch(type || 'exact') {
@@ -81,20 +76,20 @@ export const querify = (forecast: ForecastInfo): Forecast => {
                     return res.address.main.temp_min;
             }
         }),
-        visibility: () => getMeasurement(res => res.visibility),
+        visibility: () => getMeasurement(res => res.weather.visibility.value),
         wind: type => getMeasurement(res => {
             switch (type || 'speed') {
                 case 'speed':
-                    return res.wind.speed;
+                    return res.weather.wind.speed;
                 case 'degree':
-                    return res.wind.degree;
+                    return res.weather.wind.deg;
                 case 'gust':
-                    return res.wind.gust;
+                    return res.weather.wind.gust;
             }
         }),
         is: async (what) => {
             if (!what) {
-                return (await forecast.result()).find(res => res.weather.find(weather => weather.weather));
+                return (await forecast.result()).find(res => res.weather.weather.length > 0 && res.weather.weather);
             }
             if (typeof what === 'string') {
                 return getTypeOfWeather(what as WeatherMain) as any;

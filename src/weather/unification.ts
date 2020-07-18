@@ -63,11 +63,11 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     },
                     rain: {
                         '1h': item.main.rain['1h'],
-                        '3h': item.main.rain['1h'],
+                        '3h': 0,
                     },
                     snow: {
                         '1h': item.main.snow['1h'],
-                        '3h': item.main.snow['1h'],
+                        '3h': 0,
                     },
                     sys: {},
                     visibility: {
@@ -77,13 +77,13 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     wind: {
                         deg: item.main.wind.deg,
                         speed: item.main.wind.speed,
-                        gust: item.main.wind.speed,
+                        gust: 0,
                     },
                 },
                 wind: {
                     degree: item.main.wind.deg,
                     speed: item.main.wind.speed,
-                    gust: item.main.wind.speed,
+                    gust: 0,
                 },
             }));
         case '5day':
@@ -110,11 +110,11 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         value: item.rain && item.rain['3h'] ? item.rain['3h'] : (item.snow && item.snow['3h'] ? item.snow['3h'] : 0),
                     },
                     rain: {
-                        '1h': item.rain['3h'],
+                        '1h': 0,
                         '3h': item.rain['3h'],
                     },
                     snow: {
-                        '1h': item.snow['3h'],
+                        '1h': 0,
                         '3h': item.snow['3h'],
                     },
                     sys: {},
@@ -125,13 +125,13 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     wind: {
                         deg: item.wind.deg,
                         speed: item.wind.speed,
-                        gust: item.wind.speed,
+                        gust: 0,
                     },
                 },
                 wind: {
                     degree: item.wind.deg,
                     speed: item.wind.speed,
-                    gust: item.wind.speed,
+                    gust: 0,
                 },
             }));
         case '16day':
@@ -171,16 +171,16 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     },
                     rain: {
                         '1h': item.rain,
-                        '3h': item.rain,
+                        '3h': 0,
                     },
                     snow: {
                         '1h': item.snow,
-                        '3h': item.snow,
+                        '3h': 0,
                     },
                     wind: {
                         deg: item.deg,
                         speed: item.speed,
-                        gust: item.speed,
+                        gust: 0,
                     },
                     sys: {},
                     visibility: {
@@ -229,11 +229,11 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         },
                         rain: {
                             '1h': item.rain['1h'] ? item.rain['1h'] : 0,
-                            '3h': item.rain['1h'] ? item.rain['1h'] : 0,
+                            '3h': 0,
                         },
                         snow: {
                             '1h': item.snow['1h'] ? item.snow['1h'] : 0,
-                            '3h': item.snow['1h'] ? item.snow['1h'] : 0,
+                            '3h': 0,
                         },
                         sys: {},
                         visibility: {
@@ -243,7 +243,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         wind: {
                             speed: item.wind_speed,
                             deg: item.wind_deg,
-                            gust: item.wind_gust || item.wind_speed,
+                            gust: item.wind_gust || 0,
                         }
                     },
                 })),
@@ -285,11 +285,11 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         },
                         rain: {
                             '1h': item.rain ? item.rain : 0,
-                            '3h': item.rain ? item.rain : 0,
+                            '3h':  0,
                         },
                         snow: {
                             '1h': item.snow ? item.snow : 0,
-                            '3h': item.snow ? item.snow : 0,
+                            '3h': 0,
                         },
                         sys: {},
                         visibility: {
@@ -299,7 +299,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         wind: {
                             speed: item.wind_speed,
                             deg: item.wind_deg,
-                            gust: item.wind_gust || item.wind_speed,
+                            gust: item.wind_gust || 0,
                         }
                     },
                 }))),
