@@ -67,7 +67,7 @@ export interface ForecastInfo {
      */
     icon: (ico: WeatherIcon) => string;
 
-    fetchingFn: (request: RequestInfo) => Promise<Response>;
+    fetchingFn?: (request: RequestInfo) => Promise<Response>;
     storage: Storage;
     location: Locator;
     dates: [Date, Date];

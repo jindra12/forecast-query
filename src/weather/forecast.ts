@@ -105,7 +105,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             return forec;
         },
         reporter: console.warn,
-        fetchingFn: window.fetch,
+        fetchingFn: typeof window !== 'undefined' ? window.fetch : undefined,
         around: (lat, lon) => {
             forec.location.set({ kind: 'geo', geo: { lat, lon } });
             return forec;
@@ -204,7 +204,8 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
         },
         response: [],
         result: async () => {
-            if (forec.dates.length < 2) {
+            const fetcher = forec.fetchingFn;
+            if (forec.dates.length < 2 || fetcher === undefined) {
                 return forec.response;
             }
             if (
@@ -226,7 +227,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             };
             const buildResponse = (query: Query) => request(
                 query,
-                forec.fetchingFn,
+                fetcher,
                 (url, contents) => forec.storage.setItem(url, JSON.stringify(contents)),
                 url => {
                     const item = forec.storage.getItem(url);
