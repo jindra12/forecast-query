@@ -56,7 +56,6 @@ export interface ForecastInfo {
     dayAfterTomorrow: () => Forecast;
     dayBeforeYesterday: () => Forecast;
     week: (kind?: 'all' | 'work') => Forecast;
-    between: (from: Date | string | number, to: Date | string | number, by: 'day' | 'hour' | 'minute') => Forecast;
     hour: (which?: number) => Forecast;
 
     response: Result[];

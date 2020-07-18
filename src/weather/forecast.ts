@@ -98,23 +98,25 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
         lang: 'en',
         language: lang => {
             forec.lang = lang;
+            forec.response = [];
             return forec;
         },
         units: unit => {
             forec.unit = unit === 'kelvin' ? undefined : unit;
+            forec.response = [];
             return forec;
         },
         reporter: console.warn,
         fetchingFn: typeof window !== 'undefined' ? window.fetch : undefined,
         around: (lat, lon) => {
             forec.location.set({ kind: 'geo', geo: { lat, lon } });
+            forec.response = [];
             return forec;
         },
         at: (from, to) => {
             forec.dates = [new Date(from), new Date(to || from)];
             return forec;
         },
-        between: (from, to) => forec.at(from, to),
         copy: () => {
             const copy = { ...forec };
             delete copy.storeClearTimeout;
@@ -140,11 +142,13 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                         forec.location.set({ kind: 'id', id: places[0] as number });
                     }                    
                 }
+                forec.response = [];
             }
             return forec;
         },
         zip: (code, country) => {
             forec.location.set({ kind: 'zip', zip: { code, country } });
+            forec.response = [];
             return forec;
         },
         error: reporter => {
@@ -209,13 +213,13 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             if (forec.dates.length < 2 || fetcher === undefined) {
                 return forec.response;
             }
-            if (
-                forec.response.find(res => forec.dates[0].getTime() >= (res.weather.dt || 0))
-                    && forec.response.find(res => forec.dates[1].getTime() <= (res.weather.dt || 0))
-            ) {
-                return forec.response.filter(res => (res.weather.dt || 0) >= forec.dates[0].getTime() 
-                    && (res.weather.dt || 0) <= forec.dates[1].getTime());
+
+            const getByDate = forec.response.filter(res => res.weather.dt >= forec.dates[0].getTime() 
+                && res.weather.dt <= forec.dates[1].getTime());
+            if (getByDate.length > 0) {
+                return getByDate;
             }
+
             const locationResolved = forec.location.get();
             let apiQuery: ApiQuery = {
                 appid: apiKey,
