@@ -2,10 +2,10 @@ import { Query } from "./request-types";
 
 export const arrayToUrl = (...array: Array<string | undefined>) => array.filter(s => s).join(',');
 
-export const today = () => getDateWoTime(new Date());
+export const today = () => new Date();
 
 export const daysAheadFromNow = (days: number) => {
-    const now = getDateWoTime(new Date());
+    const now = today();
     now.setDate(now.getDate() + days);
     return now;
 }
@@ -30,15 +30,12 @@ export const isBetween = (from: Date, to: Date, query: Query) => from.getTime() 
     && from.getTime() <= query.to.getTime()
     && to.getTime() >= query.to.getTime();
 
-export const getDateWoTime = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-export const compareDates = (...date: Date[]) => {
-    const first = date[0];
-    return date.reduce((p: boolean, c) => !p ? false : first.getTime() === c.getTime(), true);
-}
-
-export const isDaily = (query: Query): boolean => compareDates(
-    getDateWoTime(today()),
-    getDateWoTime(query.from),
-    getDateWoTime(query.to)
-);
+export const isDaily = (query: Query): boolean => {
+    const now = today();
+    return now.getFullYear() === query.from.getFullYear()
+        && now.getMonth() === query.from.getMonth()
+        && now.getDate() === query.from.getDate()
+        && now.getFullYear() === query.to.getFullYear()
+        && now.getMonth() === query.to.getMonth()
+        && now.getDate() === query.to.getDate();
+};

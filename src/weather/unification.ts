@@ -4,8 +4,6 @@ import { Result } from "../types";
 export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
     switch (response.kind) {
         case 'daily':
-        case 'hourly':
-        case '5day':
             return response.list.map(res => ({
                 address: response.city,
                 clouds: res.clouds.all,
@@ -26,6 +24,9 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     gust: res.wind.gust,
                 },
             }));
+        case 'hourly':
+        case '5day':
+
         case '16day':
         case '30day':
             return response.list.map(res => ({

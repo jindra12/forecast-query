@@ -26,6 +26,7 @@ export const request = async (
         const response = await fetchImpl(tried[0]);
         if (response.status === 200) {
             const json = await response.json();
+            console.log(json);
             json.kind = tried[1];
             const unified = UnifyApiResponse(json);
             cache(tried[0], unified);
@@ -59,7 +60,7 @@ const ease = async (query: Query) => {
 const requestImpl = (query: Query): [string, WeatherResponseType] | null => {
     const base = byDate(query);
     query.easedLevel += 1;
-    return base ? [`${
+    return base ? [`https://${
         base[0]
     }${
         byQuery(query)
@@ -73,6 +74,15 @@ const requestImpl = (query: Query): [string, WeatherResponseType] | null => {
 };
 
 const byDate = (query: Query): [string, WeatherResponseType] | null => {
+    if (isDaily(query) && query.kind === 'geo') {
+        return [`api.openweathermap.org/data/2.5/onecall?exclude=minutely${query.by === 'day' ? ',hourly' : ''}`, 'onecall'];
+    }
+    if (query.kind === 'geo') {
+        return [`api.openweathermap.org/data/2.5/onecall/timemachine?dt=${query.from.getTime()}&exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
+    }
+    if (isDaily(query) && query.by === 'day') {
+        return ['api.openweathermap.org/data/2.5/weather?', 'daily'];
+    }
     if (isBetween(today(), fourDaysFromNow(), query) && query.by === 'hour' && query.isPro) {
         return ['pro.openweathermap.org/data/2.5/forecast/hourly?', 'hourly'];
     }
@@ -84,15 +94,6 @@ const byDate = (query: Query): [string, WeatherResponseType] | null => {
     }
     if (isBetween(today(), thirtyDaysAhead(), query) && query.isPro) {
         return ['pro.openweathermap.org/data/2.5/forecast/climate?', '30day'];
-    }
-    if (isDaily(query) && query.kind === 'geo') {
-        return [`api.openweathermap.org/data/2.5/onecall?exclude=minutely${query.by === 'day' ? ',hourly' : ''}`, 'onecall'];
-    }
-    if (query.kind === 'geo') {
-        return [`api.openweathermap.org/data/2.5/onecall/timemachine?dt=${query.from.getTime()}&exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
-    }
-    if (isDaily(query) && query.by === 'day') {
-        return ['api.openweathermap.org/data/2.5/weather?', 'daily'];
     }
     return null;
 };

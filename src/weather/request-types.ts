@@ -171,6 +171,9 @@ export interface Response {
 	temp_kf: number;
 }
 
+export interface ListOfWeatherApi {
+	
+}
 
 export interface Weather {
 	/**

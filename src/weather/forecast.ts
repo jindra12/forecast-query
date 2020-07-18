@@ -94,7 +94,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
     const forec: Forecast = querify({
         dates: [todayValue, end],
         storage: storageUnit,
-        location: location(),
+        location: location().set({ kind: 'place', place: 'New York' }),
         lang: 'en',
         language: lang => {
             forec.lang = lang;
@@ -205,12 +205,13 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
         response: [],
         result: async () => {
             const fetcher = forec.fetchingFn;
+
             if (forec.dates.length < 2 || fetcher === undefined) {
                 return forec.response;
             }
             if (
-                forec.response.find(res => forec.dates[0].getTime() === res.dt)
-                    && forec.response.find(res => forec.dates[1].getTime() === res.dt)
+                forec.response.find(res => forec.dates[0].getTime() >= (res.dt || 0))
+                    && forec.response.find(res => forec.dates[1].getTime() <= (res.dt || 0))
             ) {
                 return forec.response;
             }
@@ -284,7 +285,6 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                     }) || []));
                     break;
             }
-
             return forec.response.sort((a, b) => (a.dt || 0) - (b.dt || 0));
         },
     });
