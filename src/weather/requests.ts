@@ -12,32 +12,31 @@ export const request = async (
     tries: number = 4,
 ): Promise<Result[] | null> => {
     let tried = requestImpl(query);
-    while (tried === null && query.easedLevel < tries) {
-        ease(query);
-        tried = requestImpl(query);
-    }
-    if (!tried) {
-        return null;
-    }
-    if (cached(tried[0])) {
-        return cached(tried[0]);
-    }
-    try {
-        const response = await fetchImpl(tried[0]);
-        if (response.status === 200) {
-            const json = await response.json();
-            console.log(json);
-            json.kind = tried[1];
-            const unified = UnifyApiResponse(json);
-            cache(tried[0], unified);
-            return unified;
+    while (query.easedLevel < tries) {
+        if (tried === null) {
+            ease(query);
+            tried = requestImpl(query);
         } else {
-            reportError(response);
+            if (cached(tried[0])) {
+                return cached(tried[0]);
+            }
+            try {
+                const response = await fetchImpl(tried[0]);
+                if (response.status === 200) {
+                    const json = await response.json();
+                    json.kind = tried[1];
+                    const unified = UnifyApiResponse(json);
+                    cache(tried[0], unified);
+                    return unified;
+                } else {
+                    reportError(response);
+                }
+            } catch (e) {
+                reportError(e);
+                tried = null;
+            }
         }
-    } catch (e) {
-        reportError(e);
     }
-
     return null;
 };
 
@@ -60,6 +59,7 @@ const ease = async (query: Query) => {
 const requestImpl = (query: Query): [string, WeatherResponseType] | null => {
     const base = byDate(query);
     query.easedLevel += 1;
+
     return base ? [`https://${
         base[0]
     }${
@@ -75,10 +75,10 @@ const requestImpl = (query: Query): [string, WeatherResponseType] | null => {
 
 const byDate = (query: Query): [string, WeatherResponseType] | null => {
     if (isDaily(query) && query.kind === 'geo') {
-        return [`api.openweathermap.org/data/2.5/onecall?exclude=minutely${query.by === 'day' ? ',hourly' : ''}`, 'onecall'];
+        return [`api.openweathermap.org/data/2.5/onecall?exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
     }
     if (query.kind === 'geo') {
-        return [`api.openweathermap.org/data/2.5/onecall/timemachine?dt=${query.from.getTime()}&exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
+        return [`api.openweathermap.org/data/2.5/onecall/timemachine?dt=${Math.floor(query.from.getTime() / 1000)}&exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
     }
     if (isDaily(query) && query.by === 'day') {
         return ['api.openweathermap.org/data/2.5/weather?', 'daily'];

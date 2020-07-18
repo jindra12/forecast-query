@@ -87,13 +87,13 @@ export interface HourlyForecast {
 				 * Rain volume for the past hour, mm
 				 */
 				'1h': number;
-			};
+			} | undefined;
 			snow: {
 				/**
 				 * Snow volume for the past hour, mm
 				 */
 				'1h': number;
-			}
+			} | undefined;
 			/**
 			 * Part of the day (n - night, d - day)
 			 */
@@ -166,7 +166,7 @@ export interface DailyForecast {
 		 * Rain volume for the last 3 hours, mm
 		 */
 		'3h': number;
-	};
+	} | undefined;
 	snow: {
 		/**
 		 * Snow volume for the last 1 hour, mm
@@ -176,7 +176,7 @@ export interface DailyForecast {
 		 * Snow volume for the last 3 hours, mm
 		 */
 		'3h': number;
-	};
+	} | undefined;
 	/**
 	 * UTC datetime
 	 */
@@ -292,13 +292,13 @@ export interface FiveDayForecast {
 			 * Rain volume for last 3 hours, mm
 			 */
 			'3h': number;
-		};
+		} | undefined;
 		snow: {
 			/**
 			 * Snow volume for last 3 hours
 			 */
 			'3h': number;
-		};
+		} | undefined;
 	}];
 }
 
@@ -429,18 +429,18 @@ export interface OneCallApi {
              * (where available) Rain volume for last hour, mm
              */
             '1h': number;
-        };
+        } | undefined;
         snow: {
             /**
              * (where available) Snow volume for last hour, mm
              */
             '1h': number; 
-        };
+        } | undefined;
             
         weather: TypeOfWeather[];
     };
 
-    hourly: [{
+    hourly?: [{
         dt: number;
         temp: number;
         /**
@@ -484,20 +484,20 @@ export interface OneCallApi {
              * (where available) Rain volume for last hour, mm
              */
             '1h'?: number;
-        };
+        } | undefined;
         snow: {
             /**
              * (where available) Snow volume for last hour, mm
              */
             '1h'?: number;
-        };
+        } | undefined;
         weather: TypeOfWeather[];
     }]
 
     /**
      * Daily forecast weather data API response
      */
-    daily: [{
+    daily?: [{
         /**
          * Time of the forecasted data, Unix, UTC
          */

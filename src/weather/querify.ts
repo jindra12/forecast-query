@@ -89,7 +89,7 @@ export const querify = (forecast: ForecastInfo): Forecast => {
         }),
         is: async (what) => {
             if (!what) {
-                return (await forecast.result()).find(res => res.weather.weather.length > 0 && res.weather.weather);
+                return (await forecast.result()).find(res => res.weather.weather.length > 0 && res.weather.weather)?.weather.weather[0];
             }
             if (typeof what === 'string') {
                 return getTypeOfWeather(what as WeatherMain) as any;

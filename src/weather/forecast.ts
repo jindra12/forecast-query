@@ -213,7 +213,8 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                 forec.response.find(res => forec.dates[0].getTime() >= (res.weather.dt || 0))
                     && forec.response.find(res => forec.dates[1].getTime() <= (res.weather.dt || 0))
             ) {
-                return forec.response;
+                return forec.response.filter(res => (res.weather.dt || 0) >= forec.dates[0].getTime() 
+                    && (res.weather.dt || 0) <= forec.dates[1].getTime());
             }
             const locationResolved = forec.location.get();
             let apiQuery: ApiQuery = {
@@ -223,7 +224,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                 lang: forec.lang,
                 from: forec.dates[0],
                 to: forec.dates[1],
-                by: isPro ? 'day' : 'hour',
+                by: !isPro && locationResolved.kind !== 'geo' ? 'day' : 'hour',
                 easedLevel: 0,
             };
             const buildResponse = (query: Query) => request(
@@ -235,7 +236,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                     if (!item) {
                         return null;
                     }
-                    return JSON.parse(url);
+                    return JSON.parse(item);
                 },
                 forec.reporter,
             );
@@ -285,7 +286,8 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                     }) || []));
                     break;
             }
-            return forec.response.sort((a, b) => (a.weather.dt || 0) - (b.weather.dt || 0));
+            forec.response = forec.response.sort((a, b) => (a.weather.dt || 0) - (b.weather.dt || 0));
+            return forec.response;
         },
     });
     return forec;

@@ -20,14 +20,20 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                 },
                 weather: {
                     clouds: response.clouds,
-                    dt: response.dt,
+                    dt: response.dt * 1000,
                     dt_txt: '',
                     precipitation: {
                         mode: response.rain && response.rain['1h'] ? 'rain' : (response.snow && response.snow['1h'] ? 'snow' : 'no'),
                         value: response.rain && response.rain['1h'] ? response.rain['1h'] : (response.snow && response.snow['1h'] ? response.snow['1h'] : 0),
                     },
-                    rain: response.rain,
-                    snow: response.snow,
+                    rain: {
+                        '1h': response.rain && response.rain['1h'] ? response.rain['1h'] : 0,
+                        '3h': response.rain && response.rain['3h'] ? response.rain['3h'] : 0,
+                    },
+                    snow: {
+                        '1h': response.snow && response.snow['1h'] ? response.snow['1h'] : 0,
+                        '3h': response.snow && response.snow['3h'] ? response.snow['3h'] : 0,
+                    },
                     sys: response.sys,
                     visibility: {
                         value: 0,
@@ -55,18 +61,18 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     clouds: {
                         all: item.main.clouds,
                     },
-                    dt: item.dt,
+                    dt: item.dt * 1000,
                     dt_txt: '',
                     precipitation: {
                         mode: item.main.rain && item.main.rain['1h'] ? 'rain' : (item.main.snow && item.main.snow['1h'] ? 'snow' : 'no'),
                         value: item.main.rain && item.main.rain['1h'] ? item.main.rain['1h'] : (item.main.snow && item.main.snow['1h'] ? item.main.snow['1h'] : 0),
                     },
                     rain: {
-                        '1h': item.main.rain['1h'],
+                        '1h': item.main.rain && item.main.rain['1h'] ? item.main.rain['1h'] : 0,
                         '3h': 0,
                     },
                     snow: {
-                        '1h': item.main.snow['1h'],
+                        '1h': item.main.snow && item.main.snow['1h'] ? item.main.snow['1h'] : 0,
                         '3h': 0,
                     },
                     sys: {},
@@ -103,7 +109,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                 },
                 weather: {
                     clouds: item.clouds,
-                    dt: item.dt,
+                    dt: item.dt * 1000,
                     dt_txt: '',
                     precipitation: {
                         mode: item.rain && item.rain['3h'] ? 'rain' : (item.snow && item.snow['3h'] ? 'snow' : 'no'),
@@ -111,11 +117,11 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     },
                     rain: {
                         '1h': 0,
-                        '3h': item.rain['3h'],
+                        '3h': item.rain && item.rain['3h'] ? item.rain['3h'] : 0,
                     },
                     snow: {
                         '1h': 0,
-                        '3h': item.snow['3h'],
+                        '3h': item.snow && item.snow['3h'] ? item.snow['3h'] : 0,
                     },
                     sys: {},
                     visibility: {
@@ -163,7 +169,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     clouds: {
                         all: item.clouds,
                     },
-                    dt: item.dt,
+                    dt: item.dt * 1000,
                     dt_txt: '',
                     precipitation: {
                         mode: item.rain ? 'rain' : (item.snow ? 'snow' : 'no'),
@@ -191,7 +197,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
             }));
         case 'onecall':
             return [
-                ...[response.current, ...response.hourly].map(item => ({
+                ...[response.current, ...(response.hourly || [])].map(item => ({
                     address: {
                         coord: {
                             lat: response.lat,
@@ -221,18 +227,18 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         clouds: {
                             all: item.clouds,
                         },
-                        dt: item.dt,
+                        dt: item.dt * 1000,
                         dt_txt: '',
                         precipitation: {
                             mode: item.rain && item.rain['1h'] ? 'rain' : (item.snow && item.snow['1h'] ? 'snow' : 'no') as any,
                             value: item.rain && item.rain['1h'] ? item.rain['1h'] : (item.snow && item.snow['1h'] ? item.snow['1h'] : 0),
                         },
                         rain: {
-                            '1h': item.rain['1h'] ? item.rain['1h'] : 0,
+                            '1h': item.rain && item.rain['1h'] ? item.rain['1h'] : 0,
                             '3h': 0,
                         },
                         snow: {
-                            '1h': item.snow['1h'] ? item.snow['1h'] : 0,
+                            '1h': item.snow && item.snow['1h'] ? item.snow['1h'] : 0,
                             '3h': 0,
                         },
                         sys: {},
@@ -247,7 +253,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         }
                     },
                 })),
-                ...(response.daily.map(item => ({
+                ...(response.daily ? response.daily.map(item => ({
                     address: {
                         coord: {
                             lat: response.lat,
@@ -277,7 +283,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         clouds: {
                             all: item.clouds,
                         },
-                        dt: item.dt,
+                        dt: item.dt * 1000,
                         dt_txt: '',
                         precipitation: {
                             mode: item.rain ? 'rain' : (item.snow ? 'snow' : 'no') as any,
@@ -302,7 +308,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                             gust: item.wind_gust || 0,
                         }
                     },
-                }))),
+                })) : []),
             ]
     }
 };
