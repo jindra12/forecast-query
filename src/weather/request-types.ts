@@ -1,4 +1,4 @@
-import { Weather, Language } from "./derived-request-types";
+import { Weather, Language, TypeOfWeather } from "./derived-request-types";
 
 /**
  * Source: https://openweathermap.org/api/hourly-forecast
@@ -38,7 +38,7 @@ export interface HourlyForecast {
 	 * Number of timestamps returned by this API call
 	 */ 
     cnt: number;
-    list: {
+    list: [{
 		/**
 		 * Time of data forecasted, unix, UTC
 		 */
@@ -67,7 +67,7 @@ export interface HourlyForecast {
 			 * Percentage
 			 */
 			humidity: number;
-			weather: Weather[];
+			weather: TypeOfWeather[];
 			/**
 			 * Percentage
 			 */
@@ -99,7 +99,7 @@ export interface HourlyForecast {
 			 */
 			sys: string;
 		}
-	}
+	}];
 };
 
 export interface DailyForecast {
@@ -107,7 +107,7 @@ export interface DailyForecast {
 		lon: number;
 		lat: number;
 	};
-	weather: Weather[];
+	weather: TypeOfWeather[];
 	/**
 	 * Internal parameter
 	 */
@@ -235,7 +235,7 @@ export interface FiveDayForecast {
 	 * Number of lines returned by this API call
 	 */
     cnt: number;
-    list: {
+    list: [{
 		/**
 		 * Time of data forecasted, unix, UTC
 		 */
@@ -268,7 +268,7 @@ export interface FiveDayForecast {
 			 */
             humidity: number;
 		};
-		weather: Weather[];
+		weather: TypeOfWeather[];
 		clouds: {
 			/**
 			 * By precentage
@@ -297,7 +297,7 @@ export interface FiveDayForecast {
 			 */
 			'3h': number;
 		};
-	}
+	}];
 }
 
 export interface SixteenDayForecast {
@@ -320,7 +320,7 @@ export interface SixteenDayForecast {
 	 * Number of lines returned by this API call
 	 */
 	cnt: number;
-    list: {
+    list: [{
 		/**
 		 * Time of data forecasted
 		 */
@@ -371,7 +371,7 @@ export interface SixteenDayForecast {
 		 * Snow volume, mm
 		 */
         snow: number;
-	};
+	}];
 }
 
 export interface ThirtyDayForecast {
@@ -391,7 +391,7 @@ export interface ThirtyDayForecast {
     timezone: number;
     cod: number;
     message: string;
-    list: {
+    list: [{
         /**
          * Time of data forecasted
          */
@@ -429,7 +429,7 @@ export interface ThirtyDayForecast {
          * Humidity, %
          */
         humidity: number;
-        weather: Weather[];
+        weather: TypeOfWeather[];
         /**
          * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
          */
@@ -454,7 +454,7 @@ export interface ThirtyDayForecast {
          * Number of lines returned by this API call
          */
         cnt: number;
-    };
+    }];
 }
 
 export interface OneCallApi {
@@ -547,10 +547,10 @@ export interface OneCallApi {
             '1h': number; 
         };
             
-        weather: Weather[];
+        weather: TypeOfWeather[];
     };
 
-    hourly: {
+    hourly: [{
         dt: number;
         temp: number;
         /**
@@ -601,13 +601,13 @@ export interface OneCallApi {
              */
             '1h'?: number;
         };
-        weather: Weather[];
-    }
+        weather: TypeOfWeather[];
+    }]
 
     /**
      * Daily forecast weather data API response
      */
-    daily: {
+    daily: [{
         /**
          * Time of the forecasted data, Unix, UTC
          */
@@ -678,8 +678,8 @@ export interface OneCallApi {
          * (where available) Snow volume, mm
          */
         snow: number;
-        weather: Weather[];
-    }
+        weather: TypeOfWeather[];
+    }];
 }
 
 export type WeatherResponse = (HourlyForecast & { kind: 'hourly' })

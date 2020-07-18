@@ -110,8 +110,8 @@ export interface Locator {
     set: (item: KindOfLocator) => Locator;
 }
 
-export interface Result extends Partial<AdvancedApiPart> {
-    weather: Weather[];
+export interface Result {
+    weather: TypeOfWeather[];
     address: Address;
     wind: {
         degree: number;

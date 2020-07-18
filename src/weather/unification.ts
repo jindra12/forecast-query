@@ -4,96 +4,65 @@ import { Result } from "../types";
 export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
     switch (response.kind) {
         case 'daily':
-            return response.list.map(res => ({
-                address: response.city,
-                clouds: res.clouds.all,
-                dew_point: undefined,
-                dt: res.dt,
-                humidity: undefined,
-                weather: [res],
-                rain: res.precipitation.mode === 'rain' ? { '1h': res.precipitation.value, '3h': 0 } : undefined,
-                pressure: undefined,
-                snow: res.precipitation.mode === 'snow' ? { '1h': res.precipitation.value, '3h': 0 } : undefined,
-                sunrise: response.city.sun.sunrise,
-                sunset: response.city.sun.sunset,
-                uvi: undefined,
-                visibility: res.visibility.value,
+            return [{
+                address: {
+                    coord: response.coord,
+                    country: response.sys.country,
+                    id: response.id,
+                    name: response.name,
+                    main: {
+                        feels_like: response.main.feels_like,
+                        grnd_level: response.main.grnd_level,
+                        humidity: response.main.humidity,
+                        pressure: response.main.pressure,
+                        sea_level: response.main.sea_level,
+                        temp: response.main.temp,
+                        temp_max: response.main.temp_max,
+                        temp_min: response.main.temp_min,
+                    },
+                    population: 0,
+                    sun: {
+                        sunrise: response.sys.sunrise,
+                        sunset: response.sys.sunset,
+                    },
+                    timezone: response.timezone,
+                },
+                weather: response.weather,
                 wind: {
-                    degree: res.wind.deg,
-                    speed: res.wind.speed,
-                    gust: res.wind.gust,
+                    degree: response.wind.speed,
+                    gust: response.wind.gust || response.wind.speed,
+                    speed: response.wind.speed,
+                },
+            }];
+        case 'hourly':
+            return response.list.map(item => ({
+                address: {
+                    coord: response.city.coord,
+                    country: response.country,
+                    id: response.city.id,
+                    name: response.city.name,
+                    population: response.population,
+                    sun: {
+                        sunrise: response.sunrise,
+                        sunset: response.sunset,
+                    },
+                    timezone: response.timezone,
+                    main: {
+                        feels_like: item.main.feels_like,
+                        grnd_level: item.main.grnd_level,
+                        
+                    }
+                },
+                weather: [],
+                wind: {
+                    degree: item.main.wind.deg,
+                    speed: item.main.wind.speed,
+                    gust: item.main.wind.speed,
                 },
             }));
-        case 'hourly':
         case '5day':
-
         case '16day':
         case '30day':
-            return response.list.map(res => ({
-                address: response.city,
-                weather: res.weather,
-                clouds: res.clouds,
-                dew_point: res.dew_point,
-                dt: res.dt,
-                humidity: res.humidity,
-                pressure: res.pressure,
-                rain: res.rain,
-                snow: res.snow,
-                sunrise: res.sunrise,
-                sunset: res.sunrise,
-                uvi: res.uvi,
-                visibility: res.visibility,
-                wind: {
-                    speed: res.speed,
-                    degree: res.deg,
-                    gust: res.speed,
-                },
-            }));
         case 'onecall':
-            return [response.current, ...response.daily, ...response.hourly].map(res => ({
-                address: {
-                    name: '',
-                    population: 0,
-                    country: '',
-                    id: -1,
-                    sun: {
-                        sunrise: response.current.sunrise,
-                        sunset: response.current.sunset,
-                    },
-                    main: {
-                        feels_like: response.current.feels_like.day,
-                        grnd_level: response.current.pressure,
-                        humidity: response.current.humidity,
-                        pressure: response.current.pressure,
-                        sea_level: response.current.pressure,
-                        temp: response.current.temp.day,
-                        temp_kf: response.current.temp.day,
-                        temp_max: response.current.temp.max,
-                        temp_min: response.current.temp.min,
-                    },
-                    coord: {
-                        lat: response.lat,
-                        lon: response.lon,
-                    },
-                    timezone: response.timezone_offset,
-                },
-                weather: res.weather,
-                clouds: res.clouds,
-                dew_point: res.dew_point,
-                dt: res.dt,
-                humidity: res.humidity,
-                pressure: res.pressure,
-                rain: res.rain,
-                snow: res.snow,
-                sunrise: res.sunrise,
-                sunset: res.sunset,
-                uvi: res.uvi,
-                visibility: res.visibility,
-                wind: {
-                    degree: res.wind_deg,
-                    speed: res.wind_speed,
-                    gust: res.wind_speed,
-                }
-            }));
     }
 };

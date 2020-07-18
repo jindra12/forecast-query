@@ -164,10 +164,6 @@ export interface Response {
 	 */
 	grnd_level: number;
 	humidity: number;
-	/**
-	 * Internal parameter
-	 */
-	temp_kf: number;
 }
 export interface Weather {
 	/**
