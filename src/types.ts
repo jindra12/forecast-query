@@ -111,14 +111,6 @@ export interface Locator {
 }
 
 export interface Result {
-    weather: TypeOfWeather[];
+    weather: Weather;
     address: Address;
-    wind: {
-        degree: number;
-        speed: number;
-        /**
-         * Fallback on this value is speed
-         */
-        gust: number;
-    }
 }

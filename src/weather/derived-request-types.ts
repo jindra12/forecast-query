@@ -291,7 +291,62 @@ export interface AdvancedApiPart {
 }
 
 
-export type WeatherResponseType = 'hourly' | 'daily' | '5day' |  '16day' | '30day' | 'onecall';
+export type WeatherResponseType = 'hourly' | 'daily' | '5day' | '16day' | '30day' | 'onecall';
+
+export interface LongForecastListItem {
+	/**
+	 * Time of data forecasted
+	 */
+	dt: number;
+	sunrise: number;
+	sunset: number;
+	temp: {
+		day: number;
+		min: number;
+		max: number;
+		night: number;
+		eve: number;
+		morn: number;
+	};
+	/**
+	 * Human feeling of temperature
+	 */
+	feels_like: {
+		day: number;
+		night: number;
+		eve: number;
+		morn: number;
+	};
+	/**
+	 * Atmospheric pressure on the sea level, hPa
+	 */
+	pressure: number;
+	/**
+	 * Humidity, %
+	 */
+	humidity: number;
+	weather: TypeOfWeather[];
+	/**
+	 * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
+	 */
+	speed: number;
+	/**
+	 * Wind direction, degrees (meteorological)
+	 */
+	deg: number;
+	/**
+	 * Cloudiness, %
+	 */
+	clouds: number;
+	/**
+	 * Precipitation volume, mm
+	 */
+	rain: number;
+	/**
+	 * Snow volume, mm
+	 */
+	snow: number;
+}
 
 export interface ApiQuery {
 	appid: string;

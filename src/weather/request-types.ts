@@ -1,4 +1,4 @@
-import { Weather, Language, TypeOfWeather } from "./derived-request-types";
+import { Weather, Language, TypeOfWeather, LongForecastListItem } from "./derived-request-types";
 
 /**
  * Source: https://openweathermap.org/api/hourly-forecast
@@ -13,7 +13,7 @@ export interface HourlyForecast {
 	 */
 	message: string;
     city: {
-        id: string; 
+        id: number; 
         name: string;
         coord: {
 			lat: number;
@@ -184,7 +184,7 @@ export interface DailyForecast {
     sys: {
 		type: string;
 		id: string;
-		messag: string;
+		message: string;
 		country: Language;
 		/**
 		 * UTC time
@@ -230,6 +230,8 @@ export interface FiveDayForecast {
 		 * UTC shift in seconds
 		 */
         timezone: number;
+        sunrise: number;
+        sunset: number;
 	};
 	/**
 	 * Number of lines returned by this API call
@@ -300,11 +302,13 @@ export interface FiveDayForecast {
 	}];
 }
 
+
+
 export interface SixteenDayForecast {
     city: {
 		id: number;
 		name: string;
-		coords: {
+		coord: {
 			lat: number;
 			lon: number;
 		};
@@ -319,65 +323,14 @@ export interface SixteenDayForecast {
 	/**
 	 * Number of lines returned by this API call
 	 */
-	cnt: number;
-    list: [{
-		/**
-		 * Time of data forecasted
-		 */
-        dt: number;
-        temp: {
-			day: number;
-			min: number;
-			max: number;
-			night: number;
-			eve: number;
-			morn: number;
-		};
-		/**
-		 * Human feeling of temperature
-		 */
-        feels_like: {
-            day: number;
-            night: number;
-            eve: number;
-            morn: number;
-		};
-		/**
-		 * Atmospheric pressure on the sea level, hPa
-		 */
-		pressure: number;
-		/**
-		 * Humidity, %
-		 */
-        humidity: number;
-		weather: Weather;
-		/**
-		 * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
-		 */
-		speed: number;
-		/**
-		 * Wind direction, degrees (meteorological)
-		 */
-		deg: number;
-		/**
-		 * Cloudiness, %
-		 */
-		clouds: number;
-		/**
-		 * Precipitation volume, mm
-		 */
-		rain: number;
-		/**
-		 * Snow volume, mm
-		 */
-        snow: number;
-	}];
+    cnt: number;
+    list: LongForecastListItem[];
 }
 
 export interface ThirtyDayForecast {
     city: {
         id: number;
-        name: number;
+        name: string;
         coord: {
             lat: number;
             lon: number;
@@ -391,70 +344,7 @@ export interface ThirtyDayForecast {
     timezone: number;
     cod: number;
     message: string;
-    list: [{
-        /**
-         * Time of data forecasted
-         */
-        dt: number;
-        /**
-         * Sunrise time, Unix, UTC
-         */
-        sunrise: number;
-        /**
-         * Sunset time, Unix, UTC
-         */
-        sunset: number;
-        temp: {
-            day: number;
-            min: number;
-            max: number;
-            night: number;
-            eve: number;
-            morn: number;
-        };
-        /**
-         * This temperature parameter accounts for the human perception of weather.
-         */
-        feels_like: {
-            day: number;
-            night: number;
-            eve: number;
-            morn: number;
-        };
-        /**
-         * Atmospheric pressure on the sea level, hPa
-         */
-        pressure: number;
-        /**
-         * Humidity, %
-         */
-        humidity: number;
-        weather: TypeOfWeather[];
-        /**
-         * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
-         */
-        speed: number;
-        /**
-         * Wind direction, degrees (meteorological)
-         */
-        deg: number;
-        /**
-         * Cloudiness, %
-         */
-        clouds: number;
-        /**
-         * Precipitation volume, mm
-         */
-        rain: number;
-        /**
-         * Snow volume, mm
-         */
-        snow: number;
-        /**
-         * Number of lines returned by this API call
-         */
-        cnt: number;
-    }];
+    list: LongForecastListItem[];
 }
 
 export interface OneCallApi {
