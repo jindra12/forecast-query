@@ -50,8 +50,8 @@ describe("Can send an api request to fake api and analyze results", () => {
     });
     test("group?id=524901,703448,2643743", async () => {
         const load = forecast(apiKey).in(524901, 703448, 2643743).fetch(global.fetch);
-        expect((await load.sun('rise')).getTime()).toBe(1485753940 * 1000);
-        expect((await load.sun('set')).getTime()).toBe(1485784855 * 1000);
+        expect((await load.sun('rise'))?.getTime()).toBe(1485753940 * 1000);
+        expect((await load.sun('set'))?.getTime()).toBe(1485784855 * 1000);
         expect((await load.sunny())?.description).toBe('clear sky');
     });
     test("pro.openweathermap.org/data/2.5/forecast/hourly?id=524901", async () => {
@@ -74,8 +74,8 @@ describe("Can send an api request to fake api and analyze results", () => {
     });
     test("onecall/timemachine?exclude=minutely&lat=50.073658&lon=14.418540&dt=1595100167", async () => {
         const load = forecast(apiKey).around(50.073658, 14.418540).at(new Date(1595100167 * 1000).getTime()).fetch(global.fetch);
-        expect((await load.sun()).getTime()).toBe(1595041993 * 1000);
-        expect((await load.sun('set')).getTime()).toBe(1595099011 * 1000);
+        expect((await load.sun())?.getTime()).toBe(1595041993 * 1000);
+        expect((await load.sun('set'))?.getTime()).toBe(1595099011 * 1000);
         expect((await load.temp('feel'))).toBe(291.96);
     });
     test("onecall?exclude=minutely&lat=50.073658&lon=14.418540", async () => {
