@@ -30,6 +30,11 @@ export const isBetween = (from: Date, to: Date, query: Query) => from.getTime() 
     && from.getTime() <= query.to.getTime()
     && to.getTime() >= query.to.getTime();
 
+export const isPast = (query: Query): boolean => {
+    const now = today();
+    return now.getTime() > query.from.getTime() && now.getTime() > query.to.getTime();
+}
+
 export const isDaily = (query: Query): boolean => {
     const now = today();
     return now.getFullYear() === query.from.getFullYear()

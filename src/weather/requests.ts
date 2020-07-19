@@ -1,5 +1,5 @@
 import { Query, CityNameQuery, CityIdQuery, GeoApiQuery, ZipCodeQuery, CitiesIdQuery, WeatherResponseType } from "./derived-request-types";
-import { today, fiveDaysFromNow, isBetween, fourDaysFromNow, sixteenDaysAhead, thirtyDaysAhead, isDaily, arrayToUrl } from "./util";
+import { today, fiveDaysFromNow, isBetween, fourDaysFromNow, sixteenDaysAhead, thirtyDaysAhead, isDaily, arrayToUrl, isPast } from "./util";
 import { UnifyApiResponse } from "./unification";
 import { Result } from "../types";
 
@@ -30,6 +30,7 @@ export const request = async (
                     return unified;
                 } else {
                     reportError(response);
+                    tried = null;
                 }
             } catch (e) {
                 reportError(e);
@@ -40,7 +41,7 @@ export const request = async (
     return null;
 };
 
-const ease = async (query: Query) => {
+const ease = (query: Query) => {
     switch(query.easedLevel) {
         case 1:
             query.by = 'day';
@@ -77,7 +78,7 @@ const byDate = (query: Query): [string, WeatherResponseType] | null => {
     if (isDaily(query) && query.kind === 'geo') {
         return [`api.openweathermap.org/data/2.5/onecall?exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
     }
-    if (query.kind === 'geo') {
+    if (query.kind === 'geo' && isPast(query)) {
         return [`api.openweathermap.org/data/2.5/onecall/timemachine?dt=${Math.floor(query.from.getTime() / 1000)}&exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
     }
     if (isDaily(query) && query.by === 'day') {

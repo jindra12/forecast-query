@@ -216,6 +216,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
 
             const getByDate = forec.response.filter(res => res.weather.dt >= forec.dates[0].getTime() 
                 && res.weather.dt <= forec.dates[1].getTime());
+
             if (getByDate.length > 0) {
                 return getByDate;
             }
@@ -290,7 +291,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                     }) || []));
                     break;
             }
-            forec.response = forec.response.sort((a, b) => (a.weather.dt || 0) - (b.weather.dt || 0));
+            forec.response = forec.response.sort((a, b) => a.weather.dt - b.weather.dt || 0);
             return forec.response;
         },
     });
