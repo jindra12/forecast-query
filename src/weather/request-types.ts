@@ -137,6 +137,9 @@ export interface DailyForecast {
 		 */
 		grnd_level: number;
 	};
+	visibility: {
+		value: number;
+	};
 	wind: {
 		/**
 		 * Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.

@@ -36,7 +36,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     },
                     sys: response.sys,
                     visibility: {
-                        value: 0,
+                        value: response.visibility.value,
                     },
                     weather: response.weather,
                     wind: response.wind,

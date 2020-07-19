@@ -1,4 +1,5 @@
 export type Language = 'af'
+	| 'us'
 	| 'al'
 	| 'ar'
 	| 'az'

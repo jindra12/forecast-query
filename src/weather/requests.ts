@@ -57,8 +57,11 @@ const byDate = (query: Query): [string, WeatherResponseType] | null => {
     if (query.kind === 'geo' && isPast(query)) {
         return [`api.openweathermap.org/data/2.5/onecall/timemachine?dt=${Math.floor(query.from.getTime() / 1000)}&exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
     }
-    if (isDaily(query) && query.by === 'day') {
+    if (isDaily(query) && query.by === 'day' && query.kind !== 'ids') {
         return ['api.openweathermap.org/data/2.5/weather?', 'daily'];
+    }
+    if (isDaily(query) && query.by === 'day' && query.kind === 'ids') {
+        return ['api.openweathermap.org/data/2.5/group?', 'daily'];
     }
     if (isBetween(today(), fourDaysFromNow(), query) && query.by === 'hour' && query.isPro) {
         return ['pro.openweathermap.org/data/2.5/forecast/hourly?', 'hourly'];
@@ -67,7 +70,7 @@ const byDate = (query: Query): [string, WeatherResponseType] | null => {
         return ['api.openweathermap.org/data/2.5/forecast?', '5day'];
     }
     if (isBetween(today(), sixteenDaysAhead(), query) && query.isPro) {
-        return ['pro.openweathermap.org/data/2.5/forecast/daily?', '16day'];
+        return ['api.openweathermap.org/data/2.5/forecast/daily?cnt=16&', '16day'];
     }
     if (isBetween(today(), thirtyDaysAhead(), query) && query.isPro) {
         return ['pro.openweathermap.org/data/2.5/forecast/climate?', '30day'];

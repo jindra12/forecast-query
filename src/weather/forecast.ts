@@ -202,7 +202,10 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                 if (forec.storeClearTimeout !== undefined) {
                     clearInterval(forec.storeClearTimeout);
                 }
-                forec.storeClearTimeout = setInterval(forec.storage.clear, timeout * 60 * 1000) as any;
+                forec.storeClearTimeout = setInterval(() => {
+                    forec.response = [];
+                    forec.storage.clear();
+                }, timeout * 60 * 1000) as any;
             }
             return forec;
         },
@@ -293,7 +296,8 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                     break;
             }
             forec.response = forec.response.sort((a, b) => a.weather.dt - b.weather.dt || 0);
-            return forec.response;
+            return forec.response.filter(res => res.weather.dt >= forec.dates[0].getTime() 
+                && res.weather.dt <= forec.dates[1].getTime());
         },
     });
     return forec;

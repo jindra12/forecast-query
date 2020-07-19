@@ -3124,7 +3124,7 @@ export const apiResults: { [key: string]: object } = {
             "country": "RU"
         }
     },
-    ['https://api.openweathermap.org/data/2.5/forecast/hourly?lat=35&lon=139&appid=439d4b804bc8187953eb36d2a8c26a02']: {
+    ['https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=35&lon=139&appid=439d4b804bc8187953eb36d2a8c26a02']: {
         "cod": "200",
         "message": 0.0106,
         "cnt": 96,
@@ -6234,7 +6234,7 @@ export const apiResults: { [key: string]: object } = {
             "country": "JP"
         }
     },
-    ['https://api.openweathermap.org/data/2.5/forecast/hourly?zip=94040&appid=439d4b804bc8187953eb36d2a8c26a02']: {
+    ['https://pro.openweathermap.org/data/2.5/forecast/hourly?zip=94040&appid=439d4b804bc8187953eb36d2a8c26a02']: {
         "cod": "200",
         "message": 0.0208,
         "cnt": 96,
@@ -13951,7 +13951,7 @@ export const apiResults: { [key: string]: object } = {
             "country": "none"
         }
     },
-    ['https://samples.openweathermap.org/data/2.5/forecast?lat=35&lon=139&appid=439d4b804bc8187953eb36d2a8c26a02']: {
+    ['https://api.openweathermap.org/data/2.5/forecast?lat=35&lon=139&appid=439d4b804bc8187953eb36d2a8c26a02']: {
         "cod": "200",
         "message": 0.0082,
         "cnt": 40,

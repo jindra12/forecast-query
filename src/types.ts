@@ -20,7 +20,7 @@ export interface ForecastQueries {
     is: <T extends WeatherId | WeatherMain>(what?: T) => Promise<TypeOfWeather | null>;
     temp: (type?: 'exact' | 'feel' | 'max' | 'min') => Promise<number | null>;
     pressure: (type?: 'default' | 'ground' | 'sea') => Promise<number | null>;
-    humidity: (from?: number, to?: number) => Promise<number | null>;
+    humidity: () => Promise<number | null>;
     /**
      * Returns cloud percentage on the sky. Will return null if nothing is found
      */
