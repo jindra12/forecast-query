@@ -2,7 +2,16 @@ import { Query } from "./derived-request-types";
 
 export const arrayToUrl = (...array: Array<string | undefined>) => array.filter(s => s).join(',');
 
-export const today = () => new Date();
+/**
+ * Used for mocks, not real export
+ */
+export const setWhatIsToday = (date: Date) => whatIsToday = date;
+
+/**
+ * Used for mocks, not real export
+ */
+let whatIsToday: Date | null = null;
+export const today = () => whatIsToday ? new Date(whatIsToday) : new Date();
 
 export const daysAheadFromNow = (days: number) => {
     const now = today();

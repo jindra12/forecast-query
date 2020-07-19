@@ -90,7 +90,6 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
     end.setHours(23);
     end.setMinutes(59);
     end.setSeconds(59);
-
     const forec: Forecast = querify({
         dates: [todayValue, end],
         storage: storageUnit,
@@ -171,8 +170,8 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             forec.dates = [daysAheadFromNow(-1), today()];
             return forec;
         },
-        today: from => {
-            const todayValue = !from || from === 'midnight' ? today() : new Date();
+        today: () => {
+            const todayValue = today();
             const end = new Date(todayValue);
             end.setHours(23);
             end.setMinutes(59);
@@ -186,7 +185,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             return forec;
         },
         hour: which => {
-            const realWhich = which || new Date().getHours();
+            const realWhich = which || today().getHours();
             const movedDate = today();
             movedDate.setHours(realWhich);
             const end = new Date(movedDate);
@@ -225,7 +224,6 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             } else {
                 forec.response = [];
             }
-
             const locationResolved = forec.location.get();
             let apiQuery: ApiQuery = {
                 appid: apiKey,

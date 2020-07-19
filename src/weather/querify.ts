@@ -50,7 +50,7 @@ export const querify = (forecast: ForecastInfo): Forecast => {
         day: async () => getTypeOfWeather(undefined) as any,
         clouds: async () => getMeasurement(res => res.weather.clouds.all),
         humidity: async () => getMeasurement(res => res.address.main.humidity),
-        precipitation: async (mode, time) => getMeasurement(res => mode !== 'snow'
+        percipitation: async (mode, time) => getMeasurement(res => mode !== 'snow'
             ? res.weather.rain[time || '1h']
             : res.weather.snow[time || '1h']
         ),
