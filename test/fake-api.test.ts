@@ -4,6 +4,7 @@ import { apiResults } from './apiResults';
 const apiKey = "439d4b804bc8187953eb36d2a8c26a02";
 
 global.fetch = jest.fn((url: string) => {
+    console.log(url);
     if (apiResults[url]) {
         return Promise.resolve({
             status: 200,

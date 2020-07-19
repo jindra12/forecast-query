@@ -45,8 +45,8 @@ const requestImpl = (query: Query): [string, WeatherResponseType] | null => {
         query.units ? `&units=${query.units}` : ''
         }&appid=${
         query.appid
-        }&lang=${
-        query.lang || 'en'
+        }${
+            query.lang && query.lang !== 'en' && query.lang !== 'us' ? `&lang=${query.lang}` : ''
         }`, base[1]] : null;
 };
 

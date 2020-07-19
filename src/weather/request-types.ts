@@ -184,7 +184,7 @@ export interface DailyForecast {
 	 * UTC datetime
 	 */
 	dt: number;
-    sys: {
+    sys?: {
 		type: string;
 		id: string;
 		message: string;

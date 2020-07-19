@@ -7,14 +7,14 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
             return [{
                 address: {
                     coord: response.coord,
-                    country: response.sys.country,
+                    country: response.sys ? response.sys.country : '',
                     id: response.id,
                     name: response.name,
                     main: response.main,
                     population: 0,
                     sun: {
-                        sunrise: response.sys.sunrise,
-                        sunset: response.sys.sunset,
+                        sunrise: response.sys ? response.sys.sunrise : 0,
+                        sunset: response.sys ? response.sys.sunset : 0,
                     },
                     timezone: response.timezone,
                 },
@@ -34,7 +34,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         '1h': response.snow && response.snow['1h'] ? response.snow['1h'] : 0,
                         '3h': response.snow && response.snow['3h'] ? response.snow['3h'] : 0,
                     },
-                    sys: response.sys,
+                    sys: response.sys || {},
                     visibility: {
                         value: response.visibility.value,
                     },

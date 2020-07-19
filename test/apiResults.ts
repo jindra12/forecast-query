@@ -9386,7 +9386,7 @@ export const apiResults: { [key: string]: object } = {
             "country": "US"
         }
     },
-    ['http://api.openweathermap.org/data/2.5/onecall/timemachine?exclude=minutely&lat=50.073658&lon=14.418540&appid=439d4b804bc8187953eb36d2a8c26a02&dt=1595100167']: {
+    ['https://api.openweathermap.org/data/2.5/onecall/timemachine?exclude=minutely&lat=35&lon=139&appid=439d4b804bc8187953eb36d2a8c26a02&dt=1595100167']: {
         "lat": 50.07,
         "lon": 14.42,
         "timezone": "Europe/Prague",
@@ -9930,7 +9930,7 @@ export const apiResults: { [key: string]: object } = {
             }
         ],
     },
-    ['http://api.openweathermap.org/data/2.5/onecall?exclude=minutely&lat=50.073658&lon=14.418540&appid=439d4b804bc8187953eb36d2a8c26a02']: {
+    ['https://api.openweathermap.org/data/2.5/onecall?exclude=minutely&lat=35&lon=139&appid=439d4b804bc8187953eb36d2a8c26a02']: {
         "lat": 50.07,
         "lon": 14.42,
         "timezone": "Europe/Prague",
