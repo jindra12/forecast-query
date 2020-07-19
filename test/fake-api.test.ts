@@ -57,16 +57,18 @@ describe("Can send an api request to fake api and analyze results", () => {
         expect((await load.sunny())?.description).toBe('clear sky');
     });
     test("pro.openweathermap.org/data/2.5/forecast/hourly?id=524901", async () => {
+        setWhatIsToday(new Date(1553709600 * 1000));
         const load = forecast(apiKey, true).in(524901).fetch(global.fetch);
         expect(await load.humidity()).toBe(100);
         expect(await load.pressure('ground')).toBe(997.153);
         expect((await load.cloudy())?.description).toBe('broken clouds');
     });
-    /*test("pro.openweathermap.org/data/2.5/forecast/hourly?lat=35&lon=139", async () => {
+    test("pro.openweathermap.org/data/2.5/forecast/hourly?lat=35&lon=139", async () => {
+        setWhatIsToday(new Date(1553709600 * 1000));
         const load = forecast(apiKey, true).around(35, 139).fetch(global.fetch);
         expect(await load.clouds()).toBe(0);
-        expect(await load.wind()).toBe(10.4);
-        expect((await load.cloudy())?.id).toBe(800);
+        expect(await load.wind()).toBe(10.14);
+        expect((await load.cloudy())?.id).toBe(801);
     });
     test("pro.openweathermap.org/data/2.5/forecast/hourly?zip=94040", async () => {
        const load = forecast(apiKey, true).zip('94040').fetch(global.fetch);
@@ -74,7 +76,7 @@ describe("Can send an api request to fake api and analyze results", () => {
        expect(await load.humidity()).toBe(100);
        expect((await load.rainy())?.description).toBe('light rain');
     });
-    test("onecall/timemachine?exclude=minutely&lat=50.073658&lon=14.418540&dt=1595100167", async () => {
+    /*test("onecall/timemachine?exclude=minutely&lat=50.073658&lon=14.418540&dt=1595100167", async () => {
         const load = forecast(apiKey).around(50.073658, 14.418540).at(new Date(1595100167 * 1000).getTime()).fetch(global.fetch);
         expect((await load.sun())?.getTime()).toBe(1595041993 * 1000);
         expect((await load.sun('set'))?.getTime()).toBe(1595099011 * 1000);

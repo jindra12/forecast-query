@@ -67,38 +67,41 @@ export interface HourlyForecast {
 			 * Percentage
 			 */
 			humidity: number;
-			weather: TypeOfWeather[];
-			/**
-			 * Percentage
-			 */
-			clouds: number;
-			wind: {
-				/**
-				 * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
-				 */
-				speed: number;
-				/**
-				 * Which way the wind is blowing
-				 */ 
-				deg: number;
-			};
-			rain: {
-				/**
-				 * Rain volume for the past hour, mm
-				 */
-				'1h': number;
-			} | undefined;
-			snow: {
-				/**
-				 * Snow volume for the past hour, mm
-				 */
-				'1h': number;
-			} | undefined;
-			/**
-			 * Part of the day (n - night, d - day)
-			 */
-			sys: string;
 		}
+		weather: TypeOfWeather[];
+		/**
+		 * Percentage
+		 */
+		clouds: {
+			all: number;
+		};
+		wind: {
+			/**
+			 * Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
+			 */
+			speed: number;
+			/**
+			 * Which way the wind is blowing
+			 */ 
+			deg: number;
+		};
+		rain: {
+			/**
+			 * Rain volume for the past hour, mm
+			 */
+			'1h': number;
+		} | undefined;
+		snow: {
+			/**
+			 * Snow volume for the past hour, mm
+			 */
+			'1h': number;
+		} | undefined;
+		/**
+		 * Part of the day (n - night, d - day)
+		 */
+		sys: string;
+
 	}];
 };
 

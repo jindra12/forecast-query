@@ -63,36 +63,36 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                 },
                 weather: {
                     clouds: {
-                        all: item.main.clouds,
+                        all: item.clouds.all,
                     },
                     dt: item.dt * 1000,
                     dt_txt: '',
                     precipitation: {
-                        mode: item.main.rain && item.main.rain['1h'] ? 'rain' : (item.main.snow && item.main.snow['1h'] ? 'snow' : 'no'),
-                        value: item.main.rain && item.main.rain['1h'] ? item.main.rain['1h'] : (item.main.snow && item.main.snow['1h'] ? item.main.snow['1h'] : 0),
+                        mode: item.rain && item.rain['1h'] ? 'rain' : (item.snow && item.snow['1h'] ? 'snow' : 'no'),
+                        value: item.rain && item.rain['1h'] ? item.rain['1h'] : (item.snow && item.snow['1h'] ? item.snow['1h'] : 0),
                     },
                     rain: {
-                        '1h': item.main.rain && item.main.rain['1h'] ? item.main.rain['1h'] : 0,
+                        '1h': item.rain && item.rain['1h'] ? item.rain['1h'] : 0,
                         '3h': 0,
                     },
                     snow: {
-                        '1h': item.main.snow && item.main.snow['1h'] ? item.main.snow['1h'] : 0,
+                        '1h': item.snow && item.snow['1h'] ? item.snow['1h'] : 0,
                         '3h': 0,
                     },
                     sys: {},
                     visibility: {
                         value: 0,
                     },
-                    weather: item.main.weather,
+                    weather: item.weather,
                     wind: {
-                        deg: item.main.wind.deg,
-                        speed: item.main.wind.speed,
+                        deg: item.wind.deg,
+                        speed: item.wind.speed,
                         gust: 0,
                     },
                 },
                 wind: {
-                    degree: item.main.wind.deg,
-                    speed: item.main.wind.speed,
+                    degree: item.wind.deg,
+                    speed: item.wind.speed,
                     gust: 0,
                 },
             }));
