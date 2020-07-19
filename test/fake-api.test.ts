@@ -19,48 +19,46 @@ global.fetch = jest.fn((url: string) => {
 
 
 describe("Can send an api request to fake api and analyze results", () => {
-    beforeAll(() => {
-        // In order to mock requests properly, we need a time machine
-        setWhatIsToday(new Date(1485789600 * 1000)).toString();
-    });
     test("weather?q=London,uk", async () => {
-
+        // In order to mock requests properly, we need a time machine
+        setWhatIsToday(new Date(1485789600 * 1000));
         const load = forecast(apiKey).in('London', 'uk').fetch(global.fetch);
         expect(await load.clouds()).toBe(90);
         expect(await load.wind('speed')).toBe(4.1);
         expect((await load.drizzle())?.description).toBe('light intensity drizzle');
     });
     test("weather?q=London", async () => {
+        // In order to mock requests properly, we need a time machine
+        setWhatIsToday(new Date(1485789600 * 1000));
         const load = forecast(apiKey).in('London').fetch(global.fetch);
         expect(await load.pressure()).toBe(1012);
         expect(await load.humidity()).toBe(81);
         expect((await load.drizzle())?.description).toBe('light intensity drizzle');
     });
     test("weather?id=2172797", async () => {
+        setWhatIsToday(new Date(1485789600 * 1000));
         const load = forecast(apiKey).in(2172797).fetch(global.fetch);
         expect(await load.temp('max')).toBe(300.15);
         expect(await load.temp()).toBe(300.15);
         expect((await load.cloudy())?.description).toBe('scattered clouds');
     });
-    test("weather?lat=35&lon=139", async () => {
-        const load = forecast(apiKey).around(35, 139).fetch(global.fetch);
-        expect(await load.humidity()).toBe(100);
-        expect(await load.pressure()).toBe(1013.75);
-        expect((await load.sunny())?.description).toBe('clear sky');
-    });
-    /*test("weather?zip=94040,us", async () => {
+    test("weather?zip=94040,us", async () => {
+        setWhatIsToday(new Date(1519061700 * 1000));
         const load = forecast(apiKey).zip('94040', 'us').fetch(global.fetch);
         expect(await load.visibility()).toBe(12874);
         expect(await load.wind('gust')).toBe(11.3);
         expect((await load.clouds())).toBe(1);
     });
     test("group?id=524901,703448,2643743", async () => {
+        setWhatIsToday(new Date(1485793175 * 1000));
         const load = forecast(apiKey).in(524901, 703448, 2643743).fetch(global.fetch);
+        console.log(await load.result());
+        console.log(load.response);
         expect((await load.sun('rise'))?.getTime()).toBe(1485753940 * 1000);
         expect((await load.sun('set'))?.getTime()).toBe(1485784855 * 1000);
         expect((await load.sunny())?.description).toBe('clear sky');
     });
-    test("pro.openweathermap.org/data/2.5/forecast/hourly?id=524901", async () => {
+    /*test("pro.openweathermap.org/data/2.5/forecast/hourly?id=524901", async () => {
         const load = forecast(apiKey, true).in(524901).fetch(global.fetch);
         expect(await load.humidity()).toBe(100);
         expect(await load.pressure('ground')).toBe(997.153);
