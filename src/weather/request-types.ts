@@ -210,6 +210,11 @@ export interface DailyForecast {
 	name: string;
 };
 
+export interface GroupDailyForecast {
+	cnt: number;
+	list: DailyForecast[];
+}
+
 export interface FiveDayForecast {
 	/**
 	 * Internal parameter
@@ -575,6 +580,7 @@ export interface OneCallApi {
 
 export type WeatherResponse = (HourlyForecast & { kind: 'hourly' })
 	| (DailyForecast & { kind: 'daily' })
+	| (GroupDailyForecast & { kind: 'group' })
 	| (FiveDayForecast & { kind: '5day' })
 	| (SixteenDayForecast & { kind: '16day' })
 	| (ThirtyDayForecast & { kind: '30day' })

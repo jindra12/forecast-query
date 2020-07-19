@@ -52,19 +52,17 @@ describe("Can send an api request to fake api and analyze results", () => {
     test("group?id=524901,703448,2643743", async () => {
         setWhatIsToday(new Date(1485793175 * 1000));
         const load = forecast(apiKey).in(524901, 703448, 2643743).fetch(global.fetch);
-        console.log(await load.result());
-        console.log(load.response);
         expect((await load.sun('rise'))?.getTime()).toBe(1485753940 * 1000);
         expect((await load.sun('set'))?.getTime()).toBe(1485784855 * 1000);
         expect((await load.sunny())?.description).toBe('clear sky');
     });
-    /*test("pro.openweathermap.org/data/2.5/forecast/hourly?id=524901", async () => {
+    test("pro.openweathermap.org/data/2.5/forecast/hourly?id=524901", async () => {
         const load = forecast(apiKey, true).in(524901).fetch(global.fetch);
         expect(await load.humidity()).toBe(100);
         expect(await load.pressure('ground')).toBe(997.153);
         expect((await load.cloudy())?.description).toBe('broken clouds');
     });
-    test("pro.openweathermap.org/data/2.5/forecast/hourly?lat=35&lon=139", async () => {
+    /*test("pro.openweathermap.org/data/2.5/forecast/hourly?lat=35&lon=139", async () => {
         const load = forecast(apiKey, true).around(35, 139).fetch(global.fetch);
         expect(await load.clouds()).toBe(0);
         expect(await load.wind()).toBe(10.4);

@@ -70,7 +70,7 @@ const byDate = (query: Query): [string, WeatherResponseType] | null => {
         return ['api.openweathermap.org/data/2.5/weather?', 'daily'];
     }
     if (isDaily(query) && query.by === 'day' && query.kind === 'ids') {
-        return ['api.openweathermap.org/data/2.5/group?', 'daily'];
+        return ['api.openweathermap.org/data/2.5/group?', 'group'];
     }
     if (isBetween(today(), fiveDaysFromNow(), query)) {
         return ['api.openweathermap.org/data/2.5/forecast?', '5day'];

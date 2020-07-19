@@ -303,7 +303,7 @@ export interface AdvancedApiPart {
 }
 
 
-export type WeatherResponseType = 'hourly' | 'daily' | '5day' | '16day' | '30day' | 'onecall';
+export type WeatherResponseType = 'hourly' | 'daily' | 'group' | '5day' | '16day' | '30day' | 'onecall';
 
 export interface LongForecastListItem {
 	/**

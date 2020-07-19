@@ -1,47 +1,51 @@
-import { WeatherResponse } from "./request-types";
+import { WeatherResponse, DailyForecast } from "./request-types";
 import { Result } from "../types";
+
+const getDailyResponse = (response: DailyForecast): Result => ({
+    address: {
+        coord: response.coord,
+        country: response.sys ? response.sys.country : '',
+        id: response.id,
+        name: response.name,
+        main: response.main,
+        population: 0,
+        sun: {
+            sunrise: response.sys ? response.sys.sunrise * 1000 : 0,
+            sunset: response.sys ? response.sys.sunset * 1000 : 0,
+        },
+        timezone: response.timezone,
+    },
+    weather: {
+        clouds: response.clouds,
+        dt: response.dt * 1000,
+        dt_txt: '',
+        precipitation: {
+            mode: response.rain && response.rain['1h'] ? 'rain' : (response.snow && response.snow['1h'] ? 'snow' : 'no'),
+            value: response.rain && response.rain['1h'] ? response.rain['1h'] : (response.snow && response.snow['1h'] ? response.snow['1h'] : 0),
+        },
+        rain: {
+            '1h': response.rain && response.rain['1h'] ? response.rain['1h'] : 0,
+            '3h': response.rain && response.rain['3h'] ? response.rain['3h'] : 0,
+        },
+        snow: {
+            '1h': response.snow && response.snow['1h'] ? response.snow['1h'] : 0,
+            '3h': response.snow && response.snow['3h'] ? response.snow['3h'] : 0,
+        },
+        sys: response.sys || {},
+        visibility: {
+            value: response.visibility,
+        },
+        weather: response.weather,
+        wind: response.wind,
+    },
+});
 
 export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
     switch (response.kind) {
         case 'daily':
-            return [{
-                address: {
-                    coord: response.coord,
-                    country: response.sys ? response.sys.country : '',
-                    id: response.id,
-                    name: response.name,
-                    main: response.main,
-                    population: 0,
-                    sun: {
-                        sunrise: response.sys ? response.sys.sunrise : 0,
-                        sunset: response.sys ? response.sys.sunset : 0,
-                    },
-                    timezone: response.timezone,
-                },
-                weather: {
-                    clouds: response.clouds,
-                    dt: response.dt * 1000,
-                    dt_txt: '',
-                    precipitation: {
-                        mode: response.rain && response.rain['1h'] ? 'rain' : (response.snow && response.snow['1h'] ? 'snow' : 'no'),
-                        value: response.rain && response.rain['1h'] ? response.rain['1h'] : (response.snow && response.snow['1h'] ? response.snow['1h'] : 0),
-                    },
-                    rain: {
-                        '1h': response.rain && response.rain['1h'] ? response.rain['1h'] : 0,
-                        '3h': response.rain && response.rain['3h'] ? response.rain['3h'] : 0,
-                    },
-                    snow: {
-                        '1h': response.snow && response.snow['1h'] ? response.snow['1h'] : 0,
-                        '3h': response.snow && response.snow['3h'] ? response.snow['3h'] : 0,
-                    },
-                    sys: response.sys || {},
-                    visibility: {
-                        value: response.visibility,
-                    },
-                    weather: response.weather,
-                    wind: response.wind,
-                },
-            }];
+            return [getDailyResponse(response)];
+        case 'group':
+            return response.list.map(getDailyResponse);
         case 'hourly':
             return response.list.map(item => ({
                 address: {
@@ -51,8 +55,8 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     name: response.city.name,
                     population: response.population,
                     sun: {
-                        sunrise: response.sunrise,
-                        sunset: response.sunset,
+                        sunrise: response.sunrise * 1000,
+                        sunset: response.sunset * 1000,
                     },
                     timezone: response.timezone,
                     main: item.main,
@@ -101,8 +105,8 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     name: response.city.name,
                     population: 0,
                     sun: {
-                        sunrise: response.city.sunrise,
-                        sunset: response.city.sunset,
+                        sunrise: response.city.sunrise * 1000,
+                        sunset: response.city.sunset * 1000,
                     },
                     timezone: response.city.timezone,
                     main: item.main,
@@ -150,8 +154,8 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     name: response.city.name,
                     population: 0,
                     sun: {
-                        sunrise: item.sunrise,
-                        sunset: item.sunset,
+                        sunrise: item.sunrise * 1000,
+                        sunset: item.sunset * 1000,
                     },
                     timezone: response.timezone,
                     main: {
@@ -208,8 +212,8 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         name: '',
                         population: 0,
                         sun: {
-                            sunrise: response.current.sunrise,
-                            sunset: response.current.sunset,
+                            sunrise: response.current.sunrise * 1000,
+                            sunset: response.current.sunset * 1000,
                         },
                         timezone: response.timezone_offset,
                         main: {
@@ -264,8 +268,8 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         name: '',
                         population: 0,
                         sun: {
-                            sunrise: response.current.sunrise,
-                            sunset: response.current.sunset,
+                            sunrise: response.current.sunrise * 1000,
+                            sunset: response.current.sunset * 1000,
                         },
                         timezone: response.timezone_offset,
                         main: {
