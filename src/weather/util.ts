@@ -5,7 +5,7 @@ export const arrayToUrl = (...array: Array<string | undefined>) => array.filter(
 /**
  * Used for mocks, not real export
  */
-export const setWhatIsToday = (date: Date) => whatIsToday = date;
+export const setWhatIsToday = (date: Date | null) => whatIsToday = date;
 
 /**
  * Used for mocks, not real export

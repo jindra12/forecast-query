@@ -64,7 +64,7 @@ const byDate = (query: Query): [string, WeatherResponseType] | null => {
         return [`api.openweathermap.org/data/2.5/onecall?exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
     }
     if (query.kind === 'geo' && isPast(query)) {
-        return [`api.openweathermap.org/data/2.5/onecall/timemachine?dt=${Math.floor(query.from.getTime() / 1000)}&exclude=minutely${query.by === 'day' ? ',hourly' : ''}&`, 'onecall'];
+        return [`api.openweathermap.org/data/2.5/onecall/timemachine?exclude=minutely${query.by === 'day' ? ',hourly' : ''}&dt=${Math.floor(query.from.getTime() / 1000)}&`, 'onecall'];
     }
     if (isDaily(query) && query.by === 'day' && query.kind !== 'ids') {
         return ['api.openweathermap.org/data/2.5/weather?', 'daily'];

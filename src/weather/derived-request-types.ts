@@ -323,7 +323,7 @@ export interface LongForecastListItem {
 	/**
 	 * Human feeling of temperature
 	 */
-	feels_like: {
+	feels_like?: {
 		day: number;
 		night: number;
 		eve: number;

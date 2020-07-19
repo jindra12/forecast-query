@@ -159,7 +159,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     },
                     timezone: response.timezone,
                     main: {
-                        feels_like: item.feels_like.day,
+                        feels_like: item.feels_like ? item.feels_like.day : item.temp.day,
                         grnd_level: item.pressure,
                         sea_level: item.pressure,
                         pressure: item.pressure,
