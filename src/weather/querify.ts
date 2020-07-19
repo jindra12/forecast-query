@@ -36,6 +36,7 @@ export const querify = (forecast: ForecastInfo): Forecast => {
         cloudy: async () => getTypeOfWeather('Clouds') as any,
         drizzle: async () => getTypeOfWeather('Drizzle') as any,
         rainy: async () => getTypeOfWeather('Rain') as any,
+        snowy: async () => getTypeOfWeather('Snow') as any,
         sunny: async () => getTypeOfWeather('Clear') as any,
         stormy: async () => getTypeOfWeather('Thunderstorm') as any,
         misty: async () => getTypeOfWeather('Mist') as any,

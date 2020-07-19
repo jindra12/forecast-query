@@ -80,7 +80,7 @@ export type Drizzle = DrizzleType & ({ id: 300, description: 'light intensity dr
 	| { id: 314, description: 'heavy shower rain and drizzle' }
 	| { id: 321, description: 'shower drizzle' });
 
-export type Clear = { id: 800, main: 'Clear', description: 'clear sky', icon: '01d' | '01n' };
+export type Clear = { id: 800, main: 'Clear', description: 'clear sky' | 'sky is clear', icon: '01d' | '01n' };
 
 export type Clouds = { id: 801, main: 'Clouds', description: 'few clouds: 11-25%', icon: '02d' | '02n' }
 	| { id: 802, main: 'Clouds', description: 'scattered clouds: 25-50%', icon: '03d' | '03n' }
@@ -99,6 +99,17 @@ export type Rain = { id: 500, main: 'Rain', description: 'light rain', icon: '10
 	| { id: 522, main: 'Rain', description: 'heavy intensity shower rain', icon: '09d' }
 	| { id: 531, main: 'Rain', description: 'ragged shower rain', icon: '09d' };
 
+export type Snow = { id: 600, main: 'Snow', description: 'light snow', icon: '13d' }
+	| { id: 601, main: 'Snow', description: 'Snow', icon: '13d' }
+	| { id: 602, main: 'Snow', description: 'Heavy snow', icon: '13d' }
+	| { id: 611, main: 'Snow', description: 'Sleet', icon: '13d' }
+	| { id: 612, main: 'Snow', description: 'Light shower sleet', icon: '13d' }
+	| { id: 613, main: 'Snow', description: 'Shower sleet', icon: '13d' }
+	| { id: 615, main: 'Snow', description: 'Light rain and snow', icon: '13d' }
+	| { id: 616, main: 'Snow', description: 'Rain and snow', icon: '13d' }
+	| { id: 620, main: 'Snow', description: 'Light shower snow', icon: '13d' }
+	| { id: 621, main: 'Snow', description: 'Shower snow', icon: '13d' }
+	| { id: 622, main: 'Snow', description: 'Heavy shower snow', icon: '13d' }
 
 interface AtmosphereType {
 	icon: '50d',
@@ -143,7 +154,7 @@ export type Day = DayType & ({ description: 'clear sky', icon: '01d.png' | '01n.
 	| { description: 'mist', icon: '50d.png' | '50n.png' });
 
 
-export type TypeOfWeather = Thunderstorm | Drizzle | Clear | Clouds | Rain | Atmosphere | Day;
+export type TypeOfWeather = Thunderstorm | Drizzle | Clear | Clouds | Rain | Snow | Atmosphere | Day;
 
 export type WeatherId = TypeOfWeather['id'];
 export type WeatherDescription = TypeOfWeather['description'];

@@ -1,4 +1,4 @@
-import { Rain, Clear, Clouds, Thunderstorm, Drizzle, Day, WeatherId, WeatherMain, TypeOfWeather, Smokey, Tornado, Misty, Hazey, Dusty, Foggy, Sandy, Ashy, Squally, WeatherIcon, Weather, Address, Language } from "./weather/derived-request-types";
+import { Rain, Clear, Clouds, Thunderstorm, Drizzle, Day, WeatherId, WeatherMain, TypeOfWeather, Smokey, Tornado, Misty, Hazey, Dusty, Foggy, Sandy, Ashy, Squally, WeatherIcon, Weather, Address, Language, Snow } from "./weather/derived-request-types";
 
 export interface ForecastQueries {
     rainy: () => Promise<Rain | null>;
@@ -15,6 +15,7 @@ export interface ForecastQueries {
     ashy: () => Promise<Ashy | null>;
     squally: () => Promise<Squally | null>;
     tornado: () => Promise<Tornado | null>;
+    snowy: () => Promise<Snow | null>;
 
     day: () => Promise<Day>;
     is: <T extends WeatherId | WeatherMain>(what?: T) => Promise<TypeOfWeather | null>;
@@ -39,14 +40,14 @@ export interface ForecastQueries {
     /**
      * Dates of sunrise or sundown
      */
-    sun: (what?: 'rise' | 'down') => Promise<Date | null>;
+    sun: (what?: 'rise' | 'set') => Promise<Date | null>;
 }
 
 export interface ForecastInfo {
     in: (...value: (string[] | number[])) => Forecast;
     at: (from: Date | string | number, to?: Date | string | number) => Forecast;
     around: (lat: number, lon: number) => Forecast;
-    zip: (zip: string, country: Language) => Forecast;
+    zip: (zip: string, country?: Language) => Forecast;
     units: (units: 'metric' | 'imperial' | 'kelvin') => Forecast;
     language: (lang: Language) => Forecast;
 
@@ -95,13 +96,13 @@ type KindOfLocator = { kind: 'places', places: string[] }
     | { kind: 'ids', ids: number[] }
     | { kind: 'id', id: number }
     | { kind: 'geo', geo: { lat: number, lon: number } }
-    | { kind: 'zip', zip: { code: string, country: Language } };
+    | { kind: 'zip', zip: { code: string, country?: Language } };
 
 export interface Locator {
     places?: string[];
     ids?: number[];
     geo?: { lat: number, lon: number };
-    zip?: { code: string, country: Language };
+    zip?: { code: string, country?: Language };
     get: () => (
         KindOfLocator
         | { kind: 'nothing' }
