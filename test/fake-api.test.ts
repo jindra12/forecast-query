@@ -84,9 +84,10 @@ describe("Can send an api request to fake api and analyze results", () => {
         expect((await load.temp('feel'))).toBe(291.96);
     });
     test("onecall?exclude=minutely&lat=35&lon=139", async () => {
+        setWhatIsToday(null);
         const load = forecast(apiKey).around(35, 139).fetch(global.fetch);
-        expect(await load.wind('speed')).toBe(1.2);
-        expect(await load.wind('degree')).toBe(261);
+        expect(await load.wind('speed')).toBe(1.57);
+        expect(await load.wind('degree')).toBe(267);
         expect((await load.cloudy())?.description).toBe('broken clouds');
     });
     test("forecast/daily?cnt=16&id=524901", async () => {
@@ -116,52 +117,58 @@ describe("Can send an api request to fake api and analyze results", () => {
         expect(await load.rain()).toBe(0.31);
         expect((await load.rainy())?.description).toBe('light rain');
     });
-    /*test("pro.openweathermap.org/data/2.5/climate/daily?id=524901", async () => {
-        const twentyDaysAhead = new Date();
+    test("pro.openweathermap.org/data/2.5/forecast/climate/daily?id=524901", async () => {
+        const fakeDate = setWhatIsToday(new Date(1485766800 * 1000))!;
+        const twentyDaysAhead = new Date(fakeDate);
         twentyDaysAhead.setDate(twentyDaysAhead.getDate() + 20);
-        const load = forecast(apiKey, true).in(524901).at(new Date(), twentyDaysAhead).fetch(global.fetch);
+        const load = forecast(apiKey, true).in(524901).at(new Date(fakeDate), twentyDaysAhead).fetch(global.fetch);
         expect(await load.wind('speed')).toBe(4.57);
         expect(await load.wind('degree')).toBe(225);
         expect(await load.snow()).toBe(0.01);
     });
-    test("pro.openweathermap.org/data/2.5/climate/daily?lat=35&lon=139", async () => {
-        const twentyDaysAhead = new Date();
+    test("pro.openweathermap.org/data/2.5/forecast/climate?lat=35&lon=139", async () => {
+        const fakeDate = setWhatIsToday(new Date(1485741600 * 1000))!;
+        const twentyDaysAhead = new Date(fakeDate);
         twentyDaysAhead.setDate(twentyDaysAhead.getDate() + 20);
-        const load = forecast(apiKey, true).around(35, 139).at(new Date(), twentyDaysAhead).fetch(global.fetch);
+        const load = forecast(apiKey, true).around(35, 139).at(new Date(fakeDate), twentyDaysAhead).fetch(global.fetch);
         expect(await load.temp('min')).toBe(285.51);
         expect(await load.temp('max')).toBe(285.51);
         expect(await load.pressure()).toBe(1013.75);
     });
-    test("pro.openweathermap.org/data/2.5/climate/daily?zip=94040", async () => {
-        const twentyDaysAhead = new Date();
+    test("pro.openweathermap.org/data/2.5/forecast/climate?zip=94040", async () => {
+        const fakeDate = setWhatIsToday(new Date(1519070400 * 1000))!;
+        const twentyDaysAhead = new Date(fakeDate);
         twentyDaysAhead.setDate(twentyDaysAhead.getDate() + 20);
-        const load = forecast(apiKey, true).zip('94040').at(new Date(), twentyDaysAhead).fetch(global.fetch);
+        const load = forecast(apiKey, true).zip('94040').at(new Date(fakeDate), twentyDaysAhead).fetch(global.fetch);
         expect(await load.rain()).toBe(0.31);
         expect(await load.clouds()).toBe(20);
         expect((await load.rainy())?.description).toBe('light rain');
     });
     test("forecast?q=London,us", async () => {
-        const fourDaysAhead = new Date();
+        const fakeDate = setWhatIsToday(new Date(1487246400 * 1000))!;
+        const fourDaysAhead = new Date(fakeDate);
         fourDaysAhead.setDate(fourDaysAhead.getDate() + 4);
-        const load = forecast(apiKey).in('London', 'us').at(new Date(), fourDaysAhead).fetch(global.fetch);
+        const load = forecast(apiKey).in('London', 'us').at(new Date(fakeDate), fourDaysAhead).fetch(global.fetch);
         expect(await load.temp('min')).toBe(281.556);
         expect(await load.temp('max')).toBe(286.67);
         expect(await load.pressure()).toBe(972.73);
     });
     test("forecast?id=524901", async () => {
-        const fourDaysAhead = new Date();
+        const fakeDate = setWhatIsToday(new Date(1485799200 * 1000))!;
+        const fourDaysAhead = new Date(fakeDate);
         fourDaysAhead.setDate(fourDaysAhead.getDate() + 4);
-        const load = forecast(apiKey).in(524901).at(new Date(), fourDaysAhead).fetch(global.fetch);
-        expect(await load.clouds()).toBe(68);
-        expect(await load.humidity()).toBe(84);
+        const load = forecast(apiKey).in(524901).at(new Date(fakeDate), fourDaysAhead).fetch(global.fetch);
+        expect(await load.clouds()).toBe(8);
+        expect(await load.humidity()).toBe(79);
         expect((await load.snowy())?.description).toBe('light snow');
     });
     test("forecast?lat=35&lon=139", async () => {
-        const fourDaysAhead = new Date();
+        const fakeDate = setWhatIsToday(new Date(1485799200 * 1000))!;
+        const fourDaysAhead = new Date(fakeDate);
         fourDaysAhead.setDate(fourDaysAhead.getDate() + 4);
-        const load = forecast(apiKey).around(35, 139).at(new Date(), fourDaysAhead).fetch(global.fetch);
+        const load = forecast(apiKey).around(35, 139).at(new Date(fakeDate), fourDaysAhead).fetch(global.fetch);
         expect(await load.wind('speed')).toBe(7.27);
         expect(await load.wind('degree')).toBe(15.0048);
         expect(await load.rain()).toBe(0);
-    });*/
+    });
 });
