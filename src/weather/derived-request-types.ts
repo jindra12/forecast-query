@@ -353,7 +353,6 @@ export interface ApiQuery {
 	from: Date;
 	to: Date;
 	by: 'day' | 'hour';
-	easedLevel: number;
 	isPro?: boolean;
 	units?: 'metric' | 'imperial';
 	lang?: Language;

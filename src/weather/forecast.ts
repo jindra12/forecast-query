@@ -219,6 +219,8 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
 
             if (getByDate.length > 0) {
                 return getByDate;
+            } else {
+                forec.response = [];
             }
 
             const locationResolved = forec.location.get();
@@ -230,7 +232,6 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                 from: forec.dates[0],
                 to: forec.dates[1],
                 by: !isPro && locationResolved.kind !== 'geo' ? 'day' : 'hour',
-                easedLevel: 0,
             };
             const buildResponse = (query: Query) => request(
                 query,

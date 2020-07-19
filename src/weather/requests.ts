@@ -9,69 +9,45 @@ export const request = async (
     cache: (url: string, contents: Result[]) => void,
     cached: (url: string) => Result[] | null,
     reportError: (e: any) => void,
-    tries: number = 4,
 ): Promise<Result[] | null> => {
     let tried = requestImpl(query);
-    while (query.easedLevel < tries) {
-        if (tried === null) {
-            ease(query);
-            tried = requestImpl(query);
+    if (tried === null) {
+        return null;
+    }
+    if (cached(tried[0])) {
+        return cached(tried[0]);
+    }
+    try {
+        const response = await fetchImpl(tried[0]);
+        if (response.status === 200) {
+            const json = await response.json();
+            json.kind = tried[1];
+            const unified = UnifyApiResponse(json);
+            cache(tried[0], unified);
+            return unified;
         } else {
-            if (cached(tried[0])) {
-                return cached(tried[0]);
-            }
-            try {
-                const response = await fetchImpl(tried[0]);
-                if (response.status === 200) {
-                    const json = await response.json();
-                    json.kind = tried[1];
-                    const unified = UnifyApiResponse(json);
-                    cache(tried[0], unified);
-                    return unified;
-                } else {
-                    reportError(response);
-                    tried = null;
-                }
-            } catch (e) {
-                reportError(e);
-                tried = null;
-            }
+            reportError(response);
         }
+    } catch (e) {
+        reportError(e);
     }
     return null;
 };
 
-const ease = (query: Query) => {
-    switch(query.easedLevel) {
-        case 1:
-            query.by = 'day';
-            break;
-        case 2: 
-            query.from = today();
-            query.to = fiveDaysFromNow();
-            break;
-        case 3:
-            query.from = today();
-            query.to = today();
-            break;
-    }
-}
-
 const requestImpl = (query: Query): [string, WeatherResponseType] | null => {
     const base = byDate(query);
-    query.easedLevel += 1;
 
     return base ? [`https://${
         base[0]
-    }${
+        }${
         byQuery(query)
-    }${
+        }${
         query.units ? `&units=${query.units}` : ''
-    }&appid=${
+        }&appid=${
         query.appid
-    }&lang=${
+        }&lang=${
         query.lang || 'en'
-    }`, base[1]] : null;
+        }`, base[1]] : null;
 };
 
 const byDate = (query: Query): [string, WeatherResponseType] | null => {
