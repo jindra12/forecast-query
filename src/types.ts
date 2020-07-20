@@ -120,7 +120,7 @@ export interface ForecastInfo {
     dayAfterTomorrow: () => Forecast;
     dayBeforeYesterday: () => Forecast;
     week: (kind?: 'all' | 'work') => Forecast;
-    hour: (which?: number) => Forecast;
+    hour: (which: number) => Forecast;
 
     response: Result[];
     result: () => Promise<Result[]>;

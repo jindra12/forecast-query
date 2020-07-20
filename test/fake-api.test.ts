@@ -78,17 +78,17 @@ describe("Can send an api request to fake api and analyze results", () => {
     });
     test("onecall/timemachine?exclude=minutely&lat=35&lon=139&dt=1595100167", async () => {
         setWhatIsToday(null);
-        const load = forecast(apiKey).around(35, 139).at(new Date(1595100167 * 1000).getTime()).fetch(global.fetch);
+        const load = forecast(apiKey).around(35, 139).at(new Date(1595100167 * 1000)).fetch(global.fetch);
         expect((await load.sun())?.getTime()).toBe(1595041993 * 1000);
         expect((await load.sun('set'))?.getTime()).toBe(1595099011 * 1000);
         expect((await load.temp('feel'))).toBe(291.96);
     });
     test("onecall?exclude=minutely&lat=35&lon=139", async () => {
-        setWhatIsToday(null);
+        setWhatIsToday(new Date((1595100167 + 43200) * 1000)); // Move it by 12 hours
         const load = forecast(apiKey).around(35, 139).fetch(global.fetch);
-        expect(await load.wind('speed')).toBe(1.57);
-        expect(await load.wind('degree')).toBe(267);
-        expect((await load.cloudy())?.description).toBe('broken clouds');
+        expect(await load.wind('speed')).toBe(2.16);
+        expect(await load.wind('degree')).toBe(344);
+        expect((await load.cloudy())?.description).toBe('scattered clouds');
     });
     test("forecast/daily?cnt=16&id=524901", async () => {
         const fakeDate = setWhatIsToday(new Date(1485766800 * 1000))!;

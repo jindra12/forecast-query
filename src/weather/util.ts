@@ -44,6 +44,10 @@ export const isPast = (query: Query): boolean => {
     return now.getTime() > query.from.getTime() && now.getTime() > query.to.getTime();
 }
 
+export const isLessOrEqualWoTime = (a: Date, b: Date) => a.getFullYear() <= b.getFullYear()
+        || a.getMonth() <= b.getMonth()
+        || a.getDate() <= b.getDate();
+
 export const isDaily = (query: Query): boolean => {
     const now = today();
     return now.getFullYear() === query.from.getFullYear()

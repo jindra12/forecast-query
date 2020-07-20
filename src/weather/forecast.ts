@@ -113,7 +113,15 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             return forec;
         },
         at: (from, to) => {
-            forec.dates = [new Date(from), new Date(to || from)];
+            if (!to) {
+                const end = new Date(from);
+                end.setHours(23);
+                end.setMinutes(59);
+                end.setSeconds(59);
+                forec.dates = [new Date(from), end];
+            } else {
+                forec.dates = [new Date(from), new Date(to)];
+            }
             return forec;
         },
         copy: () => {
@@ -155,19 +163,19 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             return forec;
         },
         dayAfterTomorrow: () => {
-            forec.dates = [today(), daysAheadFromNow(2)];
+            forec.at(daysAheadFromNow(2));
             return forec;
         },
         dayBeforeYesterday: () => {
-            forec.dates = [daysAheadFromNow(-2), today()];
+            forec.at(daysAheadFromNow(-2));
             return forec;
         },
         tomorrow: () => {
-            forec.dates = [today(), daysAheadFromNow(1)];
+            forec.at(daysAheadFromNow(1));
             return forec;
         },
         yesterday: () => {
-            forec.dates = [daysAheadFromNow(-1), today()];
+            forec.at(daysAheadFromNow(-1));
             return forec;
         },
         today: () => {
@@ -185,10 +193,9 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             return forec;
         },
         hour: which => {
-            const realWhich = which || today().getHours();
-            const movedDate = today();
-            movedDate.setHours(realWhich);
-            const end = new Date(movedDate);
+            const movedDate = new Date(forec.dates[0]);
+            movedDate.setHours(which);
+            const end = new Date(movedDate.toString());
             end.setHours(23);
             end.setMinutes(59);
             end.setSeconds(59);
@@ -210,14 +217,18 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
         },
         response: [],
         result: async () => {
+            const filterResultsByDate = (results: Result[]) => results.filter(
+                res => res.weather.dt >= forec.dates[0].getTime() 
+                    && res.weather.dt <= forec.dates[1].getTime()
+            );
+
             const fetcher = forec.fetchingFn;
 
-            if (forec.dates.length < 2 || fetcher === undefined) {
+            if (fetcher === undefined) {
                 return forec.response;
             }
 
-            const getByDate = forec.response.filter(res => res.weather.dt >= forec.dates[0].getTime() 
-                && res.weather.dt <= forec.dates[1].getTime());
+            const getByDate = filterResultsByDate(forec.response);
 
             if (getByDate.length > 0) {
                 return getByDate;
@@ -293,9 +304,8 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                     }) || []));
                     break;
             }
-            forec.response = forec.response.sort((a, b) => a.weather.dt - b.weather.dt || 0);
-            return forec.response.filter(res => res.weather.dt >= forec.dates[0].getTime() 
-                && res.weather.dt <= forec.dates[1].getTime());
+            forec.response = forec.response.sort((a, b) => a.weather.dt - b.weather.dt);
+            return filterResultsByDate(forec.response);
         },
     });
     return forec;
