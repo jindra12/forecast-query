@@ -50,81 +50,83 @@ export type Language = 'af'
 	| 'zu';
 
 interface ThunderstormType {
-	main: 'Thunderstorm',
-	icon: '11d',
+	main: 'Thunderstorm';
+	icon: '11d';
+	description: string;
 }
 
-export type Thunderstorm = ThunderstormType & ({ id: 200, description: 'thunderstorm with light rain' }
-	| { id: 201, description: 'thunderstorm with rain' }
-	| { id: 202, description: 'thunderstorm with heavy rain' }
-	| { id: 210, description: 'light thunderstorm' }
-	| { id: 211, description: 'thunderstorm' }
-	| { id: 212, description: 'heavy thunderstorm' }
-	| { id: 221, description: 'ragged thunderstorm' }
-	| { id: 230, description: 'thunderstorm with light drizzle' }
-	| { id: 231, description: 'thunderstorm with drizzle' }
-	| { id: 232, description: 'thunderstorm with heavy drizzle' });
+export type Thunderstorm = ThunderstormType & ({ id: 200 }
+	| { id: 201 }
+	| { id: 202 }
+	| { id: 210 }
+	| { id: 211 }
+	| { id: 212 }
+	| { id: 221 }
+	| { id: 230 }
+	| { id: 231 }
+	| { id: 232 });
 
 interface DrizzleType {
-	main: 'Drizzle',
-	icon: '09d',
+	main: 'Drizzle';
+	icon: '09d';
+	description: string;
 }
 
-export type Drizzle = DrizzleType & ({ id: 300, description: 'light intensity drizzle' }
-	| { id: 301, description: 'drizzle' }
-	| { id: 302, description: 'heavy intensity drizzle' }
-	| { id: 310, description: 'light intensity drizzle rain' }
-	| { id: 311, description: 'drizzle rain' }
-	| { id: 312, description: 'heavy intensity drizzle rain' }
-	| { id: 313, description: 'shower rain and drizzle' }
-	| { id: 314, description: 'heavy shower rain and drizzle' }
-	| { id: 321, description: 'shower drizzle' });
+export type Drizzle = DrizzleType & ({ id: 300 }
+	| { id: 301 }
+	| { id: 302 }
+	| { id: 310 }
+	| { id: 311 }
+	| { id: 312 }
+	| { id: 313 }
+	| { id: 314 }
+	| { id: 321 });
 
-export type Clear = { id: 800, main: 'Clear', description: 'clear sky' | 'sky is clear', icon: '01d' | '01n' };
+export type Clear = { id: 800, main: 'Clear', description: string, icon: '01d' | '01n' };
 
-export type Clouds = { id: 801, main: 'Clouds', description: 'few clouds: 11-25%', icon: '02d' | '02n' }
-	| { id: 802, main: 'Clouds', description: 'scattered clouds: 25-50%', icon: '03d' | '03n' }
-	| { id: 803, main: 'Clouds', description: 'broken clouds: 51-84%', icon: '04d' | '04n' }
-	| { id: 804, main: 'Clouds', description: 'overcast clouds: 85-100%', icon: '04d' | '04n' };
+export type Clouds = { id: 801, main: 'Clouds', description: string, icon: '02d' | '02n' }
+	| { id: 802, main: 'Clouds', description: string, icon: '03d' | '03n' }
+	| { id: 803, main: 'Clouds', description: string, icon: '04d' | '04n' }
+	| { id: 804, main: 'Clouds', description: string, icon: '04d' | '04n' };
 
-export type Rain = { id: 500, main: 'Rain', description: 'light rain', icon: '10d' }
-	| { id: 500, main: 'Rain', description: 'light rain', icon: '10d' }
-	| { id: 501, main: 'Rain', description: 'moderate rain', icon: '10d' }
-	| { id: 502, main: 'Rain', description: 'heavy intensity rain', icon: '10d' }
-	| { id: 503, main: 'Rain', description: 'very heavy rain', icon: '10d' }
-	| { id: 504, main: 'Rain', description: 'extreme rain', icon: '10d' }
-	| { id: 511, main: 'Rain', description: 'freezing rain', icon: '13d' }
-	| { id: 520, main: 'Rain', description: 'light intensity shower rain', icon: '09d' }
-	| { id: 521, main: 'Rain', description: 'shower rain', icon: '09d' }
-	| { id: 522, main: 'Rain', description: 'heavy intensity shower rain', icon: '09d' }
-	| { id: 531, main: 'Rain', description: 'ragged shower rain', icon: '09d' };
+export type Rain = { id: 500, main: 'Rain', description: string, icon: '10d' }
+	| { id: 500, main: 'Rain', description: string, icon: '10d' }
+	| { id: 501, main: 'Rain', description: string, icon: '10d' }
+	| { id: 502, main: 'Rain', description: string, icon: '10d' }
+	| { id: 503, main: 'Rain', description: string, icon: '10d' }
+	| { id: 504, main: 'Rain', description: string, icon: '10d' }
+	| { id: 511, main: 'Rain', description: string, icon: '13d' }
+	| { id: 520, main: 'Rain', description: string, icon: '09d' }
+	| { id: 521, main: 'Rain', description: string, icon: '09d' }
+	| { id: 522, main: 'Rain', description: string, icon: '09d' }
+	| { id: 531, main: 'Rain', description: string, icon: '09d' };
 
-export type Snow = { id: 600, main: 'Snow', description: 'light snow', icon: '13d' }
-	| { id: 601, main: 'Snow', description: 'Snow', icon: '13d' }
-	| { id: 602, main: 'Snow', description: 'Heavy snow', icon: '13d' }
-	| { id: 611, main: 'Snow', description: 'Sleet', icon: '13d' }
-	| { id: 612, main: 'Snow', description: 'Light shower sleet', icon: '13d' }
-	| { id: 613, main: 'Snow', description: 'Shower sleet', icon: '13d' }
-	| { id: 615, main: 'Snow', description: 'Light rain and snow', icon: '13d' }
-	| { id: 616, main: 'Snow', description: 'Rain and snow', icon: '13d' }
-	| { id: 620, main: 'Snow', description: 'Light shower snow', icon: '13d' }
-	| { id: 621, main: 'Snow', description: 'Shower snow', icon: '13d' }
-	| { id: 622, main: 'Snow', description: 'Heavy shower snow', icon: '13d' }
+export type Snow = { id: 600, main: 'Snow', description: string, icon: '13d' }
+	| { id: 601, main: 'Snow', description: string, icon: '13d' }
+	| { id: 602, main: 'Snow', description: string, icon: '13d' }
+	| { id: 611, main: 'Snow', description: string, icon: '13d' }
+	| { id: 612, main: 'Snow', description: string, icon: '13d' }
+	| { id: 613, main: 'Snow', description: string, icon: '13d' }
+	| { id: 615, main: 'Snow', description: string, icon: '13d' }
+	| { id: 616, main: 'Snow', description: string, icon: '13d' }
+	| { id: 620, main: 'Snow', description: string, icon: '13d' }
+	| { id: 621, main: 'Snow', description: string, icon: '13d' }
+	| { id: 622, main: 'Snow', description: string, icon: '13d' }
 
 interface AtmosphereType {
 	icon: '50d',
 }
 
-export interface Misty { id: 701, main: 'Mist', description: 'mist' }
-export interface Smokey { id: 711, main: 'Smoke', description: 'Smoke' }
-export interface Hazey { id: 721, main: 'Haze', description: 'Haze' }
-export interface DustyWhirls { id: 731, main: 'Dust', description: 'sand/ dust whirls' }
-export interface Foggy { id: 741, main: 'Fog', description: 'fog' }
-export interface Sandy { id: 751, main: 'Sand', description: 'sand' }
-export interface Dusty { id: 761, main: 'Dust', description: 'dust' }
-export interface Ashy { id: 762, main: 'Ash', description: 'volcanic ash' }
-export interface Squally { id: 771, main: 'Squall', description: 'squalls' }
-export interface Tornado { id: 781, main: 'Tornado', description: 'tornado' }
+export interface Misty { id: 701, main: 'Mist', description: string }
+export interface Smokey { id: 711, main: 'Smoke', description: string }
+export interface Hazey { id: 721, main: 'Haze', description: string }
+export interface DustyWhirls { id: 731, main: 'Dust', description: string }
+export interface Foggy { id: 741, main: 'Fog', description: string }
+export interface Sandy { id: 751, main: 'Sand', description: string }
+export interface Dusty { id: 761, main: 'Dust', description: string }
+export interface Ashy { id: 762, main: 'Ash', description: string }
+export interface Squally { id: 771, main: 'Squall', description: string }
+export interface Tornado { id: 781, main: 'Tornado', description: string }
 
 export type Atmosphere = AtmosphereType & (
 	Misty
@@ -157,7 +159,6 @@ export type Day = DayType & ({ description: 'clear sky', icon: '01d.png' | '01n.
 export type TypeOfWeather = Thunderstorm | Drizzle | Clear | Clouds | Rain | Snow | Atmosphere | Day;
 
 export type WeatherId = TypeOfWeather['id'];
-export type WeatherDescription = TypeOfWeather['description'];
 export type WeatherMain = TypeOfWeather['main'];
 export type WeatherIcon = TypeOfWeather['icon'];
 
