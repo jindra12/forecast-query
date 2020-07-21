@@ -1,2 +1,3 @@
-# binomial-heap
-Binomial heap with typescript support which can handle complex objects
+# forecast-query
+
+No-dependency openweathermap.org weather library
