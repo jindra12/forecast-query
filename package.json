@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "forecast-query dev package",
   "main": "./dist/index.js",
-  "repository": "https://github.com/jindra12/binomial-heap.git",
+  "repository": "https://github.com/jindra12/forecast-query.git",
   "author": "Jan Jindráček",
   "license": "MIT",
   "scripts": {
