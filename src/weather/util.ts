@@ -15,6 +15,10 @@ export const today = () => whatIsToday ? new Date(whatIsToday) : new Date();
 
 export const daysAheadFromNow = (days: number) => {
     const now = today();
+    now.setHours(0);
+    now.setMinutes(0);
+    now.setSeconds(0);
+    now.setMilliseconds(0);
     now.setDate(now.getDate() + days);
     return now;
 }
@@ -45,6 +49,7 @@ export const isPast = (query: Query): boolean => {
 }
 
 export const getLocalFromUtc = (time: number) => time + (new Date().getTimezoneOffset() * 60 * 1000);
+export const getUtcFromLocal = (time: number) => time - (new Date().getTimezoneOffset() * 60 * 1000);
 
 export const isLessOrEqualWoTime = (a: Date, b: Date) => a.getFullYear() <= b.getFullYear()
         || a.getMonth() <= b.getMonth()

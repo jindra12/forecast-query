@@ -1,6 +1,6 @@
 import { WeatherResponse, DailyForecast } from "./request-types";
 import { Result } from "../types";
-import { getLocalFromUtc } from "./util";
+import { getLocalFromUtc, today } from "./util";
 
 /**
  * Convert to local time using util
@@ -13,7 +13,7 @@ const convertToLocal = (date?: number, timezone?: number) => !date
         getLocalFromUtc((date + (timezone || 0)) * 1000)
     );
 
-const getDailyResponse = (response: DailyForecast): Result => ({
+const getDailyResponse = (response: DailyForecast, isToday?: boolean): Result => ({
     address: {
         coord: response.coord,
         country: response.sys ? response.sys.country : '',
@@ -29,7 +29,7 @@ const getDailyResponse = (response: DailyForecast): Result => ({
     },
     weather: {
         clouds: response.clouds,
-        dt: convertToLocal(response.dt, response.timezone),
+        dt: isToday ? today().getTime() : convertToLocal(response.dt, response.timezone),
         dt_txt: '',
         precipitation: {
             mode: response.rain && response.rain['1h'] ? 'rain' : (response.snow && response.snow['1h'] ? 'snow' : 'no'),
@@ -55,9 +55,9 @@ const getDailyResponse = (response: DailyForecast): Result => ({
 export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
     switch (response.kind) {
         case 'daily':
-            return [getDailyResponse(response)];
+            return [getDailyResponse(response, true)];
         case 'group':
-            return response.list.map(getDailyResponse);
+            return response.list.map(response => getDailyResponse(response));
         case 'hourly':
             return response.list.map(item => ({
                 address: {
