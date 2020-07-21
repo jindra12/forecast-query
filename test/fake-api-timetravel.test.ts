@@ -20,7 +20,7 @@ global.fetch = jest.fn((url: string) => {
 
 describe("Can send an api request and then read day-by-day results from the response", () => {
     test("Can time-travel in 16 day pro api", async () => {
-        const fakeDate = setWhatIsToday(new Date(1485741600 * 1000))!;
+        const fakeDate = setWhatIsToday(new Date((1485741600 - 7200) * 1000))!;
         const tenDaysAhead = new Date(fakeDate);
         tenDaysAhead.setDate(tenDaysAhead.getDate() + 10);
         const load = forecast(apiKey, true).around(35, 193).at(new Date(fakeDate), tenDaysAhead).fetch(global.fetch);
@@ -35,21 +35,10 @@ describe("Can send an api request and then read day-by-day results from the resp
         const fourDaysAhead = new Date(fakeDate);
         fourDaysAhead.setDate(fourDaysAhead.getDate() + 4);
         const load = forecast(apiKey).in('London', 'us').at(new Date(fakeDate), fourDaysAhead).fetch(global.fetch);
-        expect(await load.pressure()).toBe(972.73);
+        expect(await load.pressure()).toBe(970.91);
         load.hour(17);
         expect(await load.pressure()).toBe(970.44);
         load.hour(21);
-        expect(await load.pressure()).toBe(969.32);
-    });
-    test("Can time-travel in onecall api", async () => {
-        setWhatIsToday(new Date(1595120400 * 1000));
-        const load = forecast(apiKey).around(35, 139).at(new Date(1595100167 * 1000)).fetch(global.fetch);
-        expect((await load.rainy())?.description).toBe('moderate rain');
-        load.hour(3);
-        expect((await load.cloudy())?.description).toBe('scattered clouds');
-        load.hour(9);
-        expect((await load.cloudy())?.description).toBe('broken clouds');
-        load.hour(22);
-        expect((await load.rainy())?.description).toBe('light intensity shower rain');
+        expect(await load.pressure()).toBe(968.14);
     });
 });
