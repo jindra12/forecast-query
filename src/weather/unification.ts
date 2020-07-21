@@ -1,5 +1,17 @@
 import { WeatherResponse, DailyForecast } from "./request-types";
 import { Result } from "../types";
+import { getLocalFromUtc } from "./util";
+
+/**
+ * Convert to local time using util
+ * @param date Date in seconds
+ * @param timezone Possible timezone
+ */
+const convertToLocal = (date?: number, timezone?: number) => !date
+    ? 0
+    : (
+        getLocalFromUtc((date + (timezone || 0)) * 1000)
+    );
 
 const getDailyResponse = (response: DailyForecast): Result => ({
     address: {
@@ -10,14 +22,14 @@ const getDailyResponse = (response: DailyForecast): Result => ({
         main: response.main,
         population: 0,
         sun: {
-            sunrise: response.sys ? response.sys.sunrise * 1000 : 0,
-            sunset: response.sys ? response.sys.sunset * 1000 : 0,
+            sunrise: response.sys ? convertToLocal(response.sys.sunrise, response.timezone) : 0,
+            sunset: response.sys ? convertToLocal(response.sys.sunrise, response.timezone) : 0,
         },
-        timezone: response.timezone,
+        timezone: response.timezone || 0,
     },
     weather: {
         clouds: response.clouds,
-        dt: response.dt * 1000,
+        dt: convertToLocal(response.dt, response.timezone),
         dt_txt: '',
         precipitation: {
             mode: response.rain && response.rain['1h'] ? 'rain' : (response.snow && response.snow['1h'] ? 'snow' : 'no'),
@@ -55,17 +67,17 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     name: response.city.name,
                     population: response.population,
                     sun: {
-                        sunrise: response.sunrise * 1000,
-                        sunset: response.sunset * 1000,
+                        sunrise: convertToLocal(response.sunrise, response.timezone),
+                        sunset: convertToLocal(response.sunset, response.timezone),
                     },
-                    timezone: response.timezone,
+                    timezone: response.timezone || 0,
                     main: item.main,
                 },
                 weather: {
                     clouds: {
                         all: item.clouds.all,
                     },
-                    dt: item.dt * 1000,
+                    dt: convertToLocal(item.dt, response.timezone),
                     dt_txt: '',
                     precipitation: {
                         mode: item.rain && item.rain['1h'] ? 'rain' : (item.snow && item.snow['1h'] ? 'snow' : 'no'),
@@ -105,15 +117,15 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     name: response.city.name,
                     population: 0,
                     sun: {
-                        sunrise: response.city.sunrise * 1000,
-                        sunset: response.city.sunset * 1000,
+                        sunrise: convertToLocal(response.city.sunrise, response.city.timezone),
+                        sunset: convertToLocal(response.city.sunset, response.city.timezone),
                     },
-                    timezone: response.city.timezone,
+                    timezone: response.city.timezone || 0,
                     main: item.main,
                 },
                 weather: {
                     clouds: item.clouds,
-                    dt: item.dt * 1000,
+                    dt: convertToLocal(item.dt, response.city.timezone),
                     dt_txt: '',
                     precipitation: {
                         mode: item.rain && item.rain['3h'] ? 'rain' : (item.snow && item.snow['3h'] ? 'snow' : 'no'),
@@ -154,10 +166,10 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     name: response.city.name,
                     population: 0,
                     sun: {
-                        sunrise: item.sunrise * 1000,
-                        sunset: item.sunset * 1000,
+                        sunrise: convertToLocal(item.sunrise, response.timezone),
+                        sunset: convertToLocal(item.sunset, response.timezone),
                     },
-                    timezone: response.timezone,
+                    timezone: response.timezone || 0,
                     main: {
                         feels_like: item.feels_like ? item.feels_like.day : item.temp.day,
                         grnd_level: item.pressure,
@@ -173,7 +185,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                     clouds: {
                         all: item.clouds,
                     },
-                    dt: item.dt * 1000,
+                    dt: convertToLocal(item.dt, response.timezone),
                     dt_txt: '',
                     precipitation: {
                         mode: item.rain ? 'rain' : (item.snow ? 'snow' : 'no'),
@@ -212,10 +224,10 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         name: '',
                         population: 0,
                         sun: {
-                            sunrise: response.current.sunrise * 1000,
-                            sunset: response.current.sunset * 1000,
+                            sunrise: convertToLocal(response.current.sunrise, response.timezone_offset),
+                            sunset: convertToLocal(response.current.sunset, response.timezone_offset),
                         },
-                        timezone: response.timezone_offset,
+                        timezone: response.timezone_offset || 0,
                         main: {
                             feels_like: item.feels_like,
                             grnd_level: item.pressure,
@@ -231,7 +243,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         clouds: {
                             all: item.clouds,
                         },
-                        dt: item.dt * 1000,
+                        dt: convertToLocal(item.dt, response.timezone_offset),
                         dt_txt: '',
                         precipitation: {
                             mode: item.rain && item.rain['1h'] ? 'rain' : (item.snow && item.snow['1h'] ? 'snow' : 'no') as any,
@@ -268,10 +280,10 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         name: '',
                         population: 0,
                         sun: {
-                            sunrise: response.current.sunrise * 1000,
-                            sunset: response.current.sunset * 1000,
+                            sunrise: convertToLocal(item.sunrise, response.timezone_offset),
+                            sunset: convertToLocal(item.sunset, response.timezone_offset),
                         },
-                        timezone: response.timezone_offset,
+                        timezone: response.timezone_offset || 0,
                         main: {
                             feels_like: item.feels_like.day,
                             grnd_level: item.pressure,
@@ -287,7 +299,7 @@ export const UnifyApiResponse = (response: WeatherResponse): Result[] => {
                         clouds: {
                             all: item.clouds,
                         },
-                        dt: item.dt * 1000,
+                        dt: convertToLocal(item.dt, response.timezone_offset),
                         dt_txt: '',
                         precipitation: {
                             mode: item.rain ? 'rain' : (item.snow ? 'snow' : 'no') as any,

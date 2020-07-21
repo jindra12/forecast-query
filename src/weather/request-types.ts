@@ -25,7 +25,7 @@ export interface HourlyForecast {
 	/**
 	 * Shift in seconds from UTC
 	 */
-	timezone: number;
+	timezone?: number;
 	/**
 	 * Sunrise time, unix, UTC
 	 */
@@ -202,7 +202,7 @@ export interface DailyForecast {
 	/**
 	 * UTC shift in seconds
 	 */
-	timezone: number;
+	timezone?: number;
 	/**
 	 * City id
 	 */
@@ -238,7 +238,7 @@ export interface FiveDayForecast {
 		/**
 		 * UTC shift in seconds
 		 */
-        timezone: number;
+        timezone?: number;
         sunrise: number;
         sunset: number;
 	};
@@ -326,7 +326,7 @@ export interface SixteenDayForecast {
 	/**
 	 * Shift in seconds from UTC
 	 */
-	timezone: number;
+	timezone?: number;
 	cod: number;
 	message: string;
 	/**
@@ -350,7 +350,7 @@ export interface ThirtyDayForecast {
     /**
      * Shift in seconds from UTC
      */
-    timezone: number;
+    timezone?: number;
     cod: number;
     message: string;
     list: LongForecastListItem[];
@@ -368,11 +368,11 @@ export interface OneCallApi {
     /**
      * Timezone name for the requested location
      */
-    timezone: string;
+    timezone?: string;
     /**
      * Shift in seconds from UTC
      */
-    timezone_offset: number;
+    timezone_offset?: number;
     /**
      * Current weather data API response
      */

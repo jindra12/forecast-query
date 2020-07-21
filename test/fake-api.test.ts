@@ -17,7 +17,6 @@ global.fetch = jest.fn((url: string) => {
     }) as any
 }) as any;
 
-
 describe("Can send an api request to fake api and analyze results", () => {
     test("weather?q=London,uk", async () => {
         // In order to mock requests properly, we need a time machine
@@ -27,7 +26,7 @@ describe("Can send an api request to fake api and analyze results", () => {
         expect(await load.wind('speed')).toBe(4.1);
         expect((await load.drizzle())?.description).toBe('light intensity drizzle');
     });
-    test("weather?q=London", async () => {
+    /*test("weather?q=London", async () => {
         setWhatIsToday(new Date(1485789600 * 1000));
         const load = forecast(apiKey).in('London').fetch(global.fetch);
         expect(await load.pressure()).toBe(1012);
@@ -170,5 +169,5 @@ describe("Can send an api request to fake api and analyze results", () => {
         expect(await load.wind('speed')).toBe(7.27);
         expect(await load.wind('degree')).toBe(15.0048);
         expect(await load.rain()).toBe(0);
-    });
+    });*/
 });

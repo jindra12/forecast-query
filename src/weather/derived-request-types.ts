@@ -138,7 +138,8 @@ export type Atmosphere = AtmosphereType & (
 	| Dusty
 	| Ashy
 	| Squally
-	| Tornado);
+	| Tornado
+);
 
 interface DayType {
 	id: undefined;

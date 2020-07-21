@@ -44,6 +44,8 @@ export const isPast = (query: Query): boolean => {
     return now.getTime() > query.from.getTime() && now.getTime() > query.to.getTime();
 }
 
+export const getLocalFromUtc = (time: number) => time + (new Date().getTimezoneOffset() * 60 * 1000);
+
 export const isLessOrEqualWoTime = (a: Date, b: Date) => a.getFullYear() <= b.getFullYear()
         || a.getMonth() <= b.getMonth()
         || a.getDate() <= b.getDate();
