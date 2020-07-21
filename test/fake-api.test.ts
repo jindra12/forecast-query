@@ -78,7 +78,7 @@ describe("Can send an api request to fake api and analyze results", () => {
     });
     test("onecall/timemachine?exclude=minutely&lat=35&lon=139&dt=1595100167", async () => {
         setWhatIsToday(null);
-        const load = forecast(apiKey).around(35, 139).at(new Date((1595100167 + 7200) * 1000)).fetch(global.fetch);
+        const load = forecast(apiKey).around(35, 139).at(new Date((1595100167 - 7200) * 1000)).fetch(global.fetch);
         await load.result(); // Pre-load results, hack needed because of local time/utc, you dont need this in real use
         load.hour(12);
         expect((await load.sun())?.getTime()).toBe(1595041993 * 1000);

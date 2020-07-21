@@ -18,8 +18,6 @@ $('#send').click(async () => {
         await writeWeatherWithDate(weather);
         weather.hour(3);
         await writeWeatherWithDate(weather);
-        console.log([weather.dates[0].toString(), weather.dates[1].toString()]);
-        console.log(weather.response.map(res => new Date(res.weather.dt).toString()));
         weather.hour(17);
         await writeWeatherWithDate(weather);
         weather.today();
