@@ -1,6 +1,6 @@
 {
   "name": "forecast-query",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Queryable typescript API for weather information from openweathermap, no dependencies",
   "main": "index.js",
   "repository": "https://github.com/jindra12/forecast-query.git",

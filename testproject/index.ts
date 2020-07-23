@@ -6,8 +6,7 @@ $('#send').click(async () => {
     if (key && typeof key === 'string') {
         $('#table').css('display', 'table');
         const weatherList: Array<{ date: Date, rain: number, clouds: number, weather: string }> = [];
-        const weather = forecast(key);
-        await weather.around(50.08804, 14.42076)
+        await forecast(key).around(50.08804, 14.42076)
             .subscribe(async (from, _, cast) => {
                 weatherList.push({
                     date: from,

@@ -26,29 +26,24 @@ based on the parameters of query.
 
 ```typescript
 
-const weatherList: Array<{ date: Date, rain: number, clouds: number, weather: string }> = [];
-const weather = await forecast(key)
-    .around(50.08804, 14.42076)
-    .subscribe(async from => {
-        weatherList.push({
-            date: from,
-            clouds: await weather.clouds() || 0,
-            rain: await weather.rain() || 0,
-            weather: (await weather.is())?.description || '',
-        })
-    })
-    .yesterday()
-    .hour(3)
-    .hour(17)
-    .today()
-    .hour(19)
-    .tomorrow()
-    .hour(12)
-    .dayAfterTomorrow()
-    .clearSubscribers();
-weatherList
-    .sort((a, b) => a.date.getTime() - b.date.getTime())
-    .map(resolved => writeInTable(resolved.date, resolved.rain, resolved.clouds, resolved.weather));
+const weather = forecast(key).around(50.08804, 14.42076);
+await writeWeatherWithDate(weather);
+weather.yesterday();
+await writeWeatherWithDate(weather);
+weather.hour(3);
+await writeWeatherWithDate(weather);
+weather.hour(17);
+await writeWeatherWithDate(weather);
+weather.today();
+await writeWeatherWithDate(weather);
+weather.hour(19);
+await writeWeatherWithDate(weather);
+weather.tomorrow();
+await writeWeatherWithDate(weather);
+weather.hour(12);
+await writeWeatherWithDate(weather);
+weather.dayAfterTomorrow();
+await writeWeatherWithDate(weather);
 
 ```
 
@@ -66,5 +61,40 @@ expect((await load.sunny())?.description).toBe('sky is clear');
 
 ```
 
+### Changes since 1.1.0
+
+1) Better detection of past dates
+2) Added an option to subscribe with a function to any date/location change
+3) Added appropriate unit tests
+4) Better api documentation
+
+#### Example of subscription use
+
+With subscribers used, there is a greater attention to speedy delivery, which might mean some requests will not be cached.
+Will work on better caching in the future.
+
+```typescript
+
+forecast(key).around(50.08804, 14.42076)
+    .subscribe(async (from, _, cast) => {
+        weatherList.push({
+            date: from,
+            clouds: await cast.clouds() || 0,
+            rain: await cast.rain() || 0,
+            weather: (await cast.is())?.description || '',
+        });
+    })
+    .yesterday()
+    .hour(3)
+    .hour(17)
+    .today()
+    .hour(19)
+    .tomorrow()
+    .hour(12)
+    .dayAfterTomorrow()
+    .clearSubscribers();
+console.log(weatherList.sort((a, b) => a.date.getTime() - b.date.getTime()));
+
+```
 
 If you find any bugs, or have ideas about improving this package, please file in a task or a pull request :) .
