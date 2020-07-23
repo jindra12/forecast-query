@@ -122,6 +122,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             } else {
                 forec.dates = [new Date(from), new Date(to)];
             }
+            forec.subscribers.forEach(agent => agent(forec.dates[0], forec.dates[1]));
             return forec;
         },
         copy: () => {
@@ -162,6 +163,15 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             forec.reporter = reporter;
             return forec;
         },
+        subscribe: agent => {
+            forec.subscribers.push(agent);
+            return forec;
+        },
+        clearSubscribers: () => {
+            forec.subscribers = [];
+            return forec;
+        },
+        subscribers: [],
         dayAfterTomorrow: () => {
             forec.at(daysAheadFromNow(2));
             return forec;
@@ -184,12 +194,43 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             end.setHours(23);
             end.setMinutes(59);
             end.setSeconds(59);
-            forec.dates = [todayValue, end];
+            forec.at(todayValue, end);
             return forec;
         },
-        icon: ico => `http://openweathermap.org/img/wn/${ico}@2x.png`,
+        next: which => {
+            if (!which || which === 'day') {
+                const nextFrom = new Date(forec.dates[0]);
+                nextFrom.setDate(nextFrom.getDate() + 1);
+                const nextEnd = new Date(nextFrom);
+                nextEnd.setDate(nextEnd.getDate() + 1);
+                forec.at(nextFrom, nextEnd);
+            } else {
+                const nextFrom = new Date(forec.dates[0]);
+                nextFrom.setHours(nextFrom.getHours() + 1);
+                const nextEnd = new Date(nextFrom);
+                nextEnd.setDate(nextEnd.getDate() + 1);
+                forec.at(nextFrom, nextEnd);
+            }
+            return forec;
+        },
+        previous: which => {
+            if (!which || which === 'day') {
+                const nextFrom = new Date(forec.dates[0]);
+                nextFrom.setDate(nextFrom.getDate() - 1);
+                const nextEnd = new Date(nextFrom);
+                nextEnd.setDate(nextEnd.getDate() + 1);
+                forec.at(nextFrom, nextEnd);
+            } else {
+                const nextFrom = new Date(forec.dates[0]);
+                nextFrom.setHours(nextFrom.getHours() - 1);
+                const nextEnd = new Date(nextFrom);
+                nextEnd.setDate(nextEnd.getDate() + 1);
+                forec.at(nextFrom, nextEnd);
+            }
+            return forec;
+        },
         week: kind => {
-            forec.dates = closestWeek(kind || 'all');
+            forec.at(...closestWeek(kind || 'all'));
             return forec;
         },
         hour: which => {
@@ -199,9 +240,10 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             end.setHours(23);
             end.setMinutes(59);
             end.setSeconds(59);
-            forec.dates = [movedDate, end];
+            forec.at(movedDate, end);
             return forec;
         },
+        icon: ico => `http://openweathermap.org/img/wn/${ico}@2x.png`,
         store: (storage, timeout) => {
             forec.storage = storage;
             if (timeout !== undefined && timeout !== 'never') {

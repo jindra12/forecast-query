@@ -114,13 +114,60 @@ export interface ForecastInfo {
     units: (units: 'metric' | 'imperial' | 'kelvin') => Forecast;
     language: (lang: Language) => Forecast;
 
+    /**
+     * Read todays weather
+     */
     today: () => Forecast;
+    /**
+     * Read tomorrows weather
+     */
     tomorrow: () => Forecast;
+    /**
+     * Get forecast for the next day/hour from set date
+     */
+    next: (which?: 'day' | 'hour') => Forecast;
+
+    /**
+     * Get forecast for the previous day/hour from set date
+     */
+    previous: (which?: 'day' | 'hour') => Forecast;
+
+    /**
+     * Get yesterdays forecast
+     */
     yesterday: () => Forecast;
+
+    /**
+     * Get forecast from the day after tomorrow
+     */
     dayAfterTomorrow: () => Forecast;
+
+    /**
+     * Get forecast from the day before yesterday
+     */
     dayBeforeYesterday: () => Forecast;
+
+    /**
+     * Load forecast for next week
+     */
     week: (kind?: 'all' | 'work') => Forecast;
+
+    /**
+     * Get forecast for specific hour from set date
+     */
     hour: (which: number) => Forecast;
+
+    /**
+     * Subscribed agents will listen to changes in api dates. Use this to get current weather after changing the date
+     */
+    subscribe: (agent: (from: Date, to: Date) => void) => Forecast;
+
+    /**
+     * Clear all subscribers
+     */
+    clearSubscribers: () => Forecast;
+
+    subscribers: Array<(from: Date, to: Date) => void>;
 
     response: Result[];
     result: () => Promise<Result[]>;

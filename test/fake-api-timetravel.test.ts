@@ -41,4 +41,38 @@ describe("Can send an api request and then read day-by-day results from the resp
         load.hour(21);
         expect(await load.pressure()).toBe(968.14);
     });
+    test("Can time-travel using prev/next with hours", async () => {
+        const fakeDate = setWhatIsToday(new Date(1487246400 * 1000))!;
+        const fourDaysAhead = new Date(fakeDate);
+        fourDaysAhead.setDate(fourDaysAhead.getDate() + 4);
+        const load = forecast(apiKey).in('London', 'us').at(new Date(fakeDate), fourDaysAhead).fetch(global.fetch);
+        expect(await load.pressure()).toBe(970.91);
+        load.next('hour');
+        load.next('hour');
+        load.next('hour');
+        expect(await load.pressure()).toBe(970.44);
+        load.next('hour');
+        load.next('hour');
+        load.next('hour');
+        expect(await load.pressure()).toBe(969.32);
+        load.previous('hour');
+        load.previous('hour');
+        load.previous('hour');
+        expect(await load.pressure()).toBe(970.44);
+    });
+    test("Can time-travel using prev/next with days", async () => {
+        const fakeDate = setWhatIsToday(new Date((1485741600 - 7200) * 1000))!;
+        const tenDaysAhead = new Date(fakeDate);
+        tenDaysAhead.setDate(tenDaysAhead.getDate() + 10);
+        const load = forecast(apiKey, true).around(35, 193).at(new Date(fakeDate), tenDaysAhead).fetch(global.fetch);
+        expect(await load.temp('max')).toBe(285.51);
+        load.next();
+        expect(await load.temp('max')).toBe(284.66);
+        load.next('day');
+        expect(await load.temp('max')).toBe(285.7);
+        load.previous();
+        expect(await load.temp('max')).toBe(284.66);
+        load.previous('day');
+        expect(await load.temp('max')).toBe(285.51);
+    });
 });
