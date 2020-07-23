@@ -64,3 +64,5 @@ export const isDaily = (query: Query): boolean => {
         && now.getMonth() === query.to.getMonth()
         && now.getDate() === query.to.getDate();
 };
+
+export const fromSameHour = (query: Query): boolean => today().getHours() === query.from.getHours();
