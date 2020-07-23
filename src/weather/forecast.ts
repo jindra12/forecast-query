@@ -1,4 +1,4 @@
-import { Forecast, Result, Locator } from "../types";
+import { Forecast, Result, Locator, ForecastInfo } from "../types";
 import { today, daysAheadFromNow, closestWeek } from "./util";
 import { request } from "./requests";
 import { Query, ApiQuery } from "./derived-request-types";
@@ -81,6 +81,13 @@ const storageUnit: Storage & { stored: { [key: string]: Result[] } } = {
     },
 };
 
+const resolve = (forec: ForecastInfo) => {
+    const copy = forec.copy();
+    Promise.all(forec.running).then(() => {
+        forec.running = forec.subscribers.map(agent => agent(copy.dates[0], copy.dates[1], copy));
+    });
+};
+
 export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
     if (!apiKey) {
         throw Error('Cannot initialize forecast without api key from openweathermap.org!')
@@ -98,11 +105,13 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
         language: lang => {
             forec.lang = lang;
             forec.response = [];
+            resolve(forec);
             return forec;
         },
         units: unit => {
             forec.unit = unit === 'kelvin' ? undefined : unit;
             forec.response = [];
+            resolve(forec);
             return forec;
         },
         reporter: console.warn,
@@ -110,6 +119,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
         around: (lat, lon) => {
             forec.location.set({ kind: 'geo', geo: { lat, lon } });
             forec.response = [];
+            resolve(forec);
             return forec;
         },
         at: (from, to) => {
@@ -122,12 +132,22 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             } else {
                 forec.dates = [new Date(from), new Date(to)];
             }
-            forec.subscribers.forEach(agent => agent(forec.dates[0], forec.dates[1]));
+            resolve(forec);
             return forec;
         },
         copy: () => {
-            const copy = { ...forec };
-            delete copy.storeClearTimeout;
+            const copy = forecast(apiKey, isPro);
+            copy.dates = [...forec.dates];
+            copy.location = { ...forec.location };
+            copy.response = [...forec.response];
+            copy.reporter = forec.reporter;
+            copy.fetchingFn = forec.fetchingFn;
+            copy.storage = forec.storage;
+            copy.subscribers = [...forec.subscribers];
+            copy.running = [...forec.running];
+            copy.unit = forec.unit;
+            copy.lang = forec.lang;
+            copy.reporter = forec.reporter;
             return copy;
         },
         fetch: fn => {
@@ -151,27 +171,31 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
                     }                    
                 }
                 forec.response = [];
+                resolve(forec);
             }
             return forec;
         },
         zip: (code, country) => {
             forec.location.set({ kind: 'zip', zip: { code, country } });
             forec.response = [];
+            resolve(forec);
             return forec;
         },
         error: reporter => {
             forec.reporter = reporter;
             return forec;
         },
-        subscribe: agent => {
-            forec.subscribers.push(agent);
+        subscribe: (...agents) => {
+            forec.subscribers = agents;
             return forec;
         },
-        clearSubscribers: () => {
+        clearSubscribers: async () => {
+            await Promise.all(forec.running);
             forec.subscribers = [];
             return forec;
         },
         subscribers: [],
+        running: [],
         dayAfterTomorrow: () => {
             forec.at(daysAheadFromNow(2));
             return forec;

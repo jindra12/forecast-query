@@ -11,7 +11,6 @@ global.fetch = jest.fn((url: string) => {
             json: () => Promise.resolve(apiResults[url]),
         }) as any;
     }
-    console.log(url);
     return Promise.resolve({
         status: 400,
         json: () => Promise.resolve({ message: "Bad request" }),

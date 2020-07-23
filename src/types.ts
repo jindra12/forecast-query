@@ -111,7 +111,15 @@ export interface ForecastInfo {
      * Get zip + country (optional). If country is left empty, USA will be selected
      */
     zip: (zip: string, country?: Language) => Forecast;
+
+    /**
+     * Which kind of units should the forecast use
+     */
     units: (units: 'metric' | 'imperial' | 'kelvin') => Forecast;
+    
+    /**
+     * Which language should be used to describe the weather
+     */
     language: (lang: Language) => Forecast;
 
     /**
@@ -159,17 +167,16 @@ export interface ForecastInfo {
 
     /**
      * Subscribed agents will listen to changes in api dates. Use this to get current weather after changing the date
+     * New subscribers will rewrite the old
+     * @param forecast - safe copied instance of forecast
      */
-    subscribe: (agent: (from: Date, to: Date) => void) => Forecast;
+    subscribe: (...agents: Array<(from: Date, to: Date, forecast: Forecast) => (void | Promise<void>)>) => Forecast;
 
     /**
-     * Clear all subscribers
+     * Clear all subscribers. Will wait until everybody is resolved
      */
-    clearSubscribers: () => Forecast;
+    clearSubscribers: () => Promise<Forecast>;
 
-    subscribers: Array<(from: Date, to: Date) => void>;
-
-    response: Result[];
     result: () => Promise<Result[]>;
 
     /**
@@ -177,26 +184,39 @@ export interface ForecastInfo {
      */
     icon: (ico: WeatherIcon) => string;
 
-    fetchingFn?: (request: RequestInfo) => Promise<Response>;
-    storage: Storage;
-    location: Locator;
-    dates: [Date, Date];
-    reporter: (e: any) => void;
-    unit?: 'metric' | 'imperial';
-    lang: Language;
-
     /**
      * Can pass localStorage for caching. Can expire in an amount of minutes
      */
     store: (storage: Storage, expire?: 'never' | number) => Forecast;
-    storeClearTimeout?: number;
+    
+    /**
+     * Add your own fetching function, useful when working in node
+     */
     fetch: (fn: (input: RequestInfo) => Promise<Response>) => Forecast;
+
+    /**
+     * Add your own error reporter, default: console.warn
+     */
     error: (reporter: (e: any) => void) => Forecast;
 
     /**
      * Creates a new instance of Forecast from this one
      */
     copy: () => Forecast;
+
+    // Properties
+
+    fetchingFn?: (request: RequestInfo) => Promise<Response>;
+    subscribers: Array<(from: Date, to: Date, forecast: Forecast) => (void | Promise<void>)>;
+    running: Array<Promise<void> | void>;
+    response: Result[];
+    storage: Storage;
+    location: Locator;
+    dates: [Date, Date];
+    reporter: (e: any) => void;
+    unit?: 'metric' | 'imperial';
+    lang: Language;
+    storeClearTimeout?: number;
 }
 
 export type Forecast = ForecastQueries & ForecastInfo;

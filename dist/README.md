@@ -26,24 +26,29 @@ based on the parameters of query.
 
 ```typescript
 
-const weather = forecast(key).around(50.08804, 14.42076);
-await writeWeatherWithDate(weather);
-weather.yesterday();
-await writeWeatherWithDate(weather);
-weather.hour(3);
-await writeWeatherWithDate(weather);
-weather.hour(17);
-await writeWeatherWithDate(weather);
-weather.today();
-await writeWeatherWithDate(weather);
-weather.hour(19);
-await writeWeatherWithDate(weather);
-weather.tomorrow();
-await writeWeatherWithDate(weather);
-weather.hour(12);
-await writeWeatherWithDate(weather);
-weather.dayAfterTomorrow();
-await writeWeatherWithDate(weather);
+const weatherList: Array<{ date: Date, rain: number, clouds: number, weather: string }> = [];
+const weather = await forecast(key)
+    .around(50.08804, 14.42076)
+    .subscribe(async from => {
+        weatherList.push({
+            date: from,
+            clouds: await weather.clouds() || 0,
+            rain: await weather.rain() || 0,
+            weather: (await weather.is())?.description || '',
+        })
+    })
+    .yesterday()
+    .hour(3)
+    .hour(17)
+    .today()
+    .hour(19)
+    .tomorrow()
+    .hour(12)
+    .dayAfterTomorrow()
+    .clearSubscribers();
+weatherList
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .map(resolved => writeInTable(resolved.date, resolved.rain, resolved.clouds, resolved.weather));
 
 ```
 
