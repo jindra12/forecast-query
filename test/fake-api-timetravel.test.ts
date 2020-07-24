@@ -105,10 +105,10 @@ describe("Can send an api request and then read day-by-day results from the resp
         expect((await load.clouds()).map(val => val.value)).toEqual([0, 92, 8, 0]);
         expect((await load.rainy())[0]).toEqual({
             description: "light rain",
-            icon: "10d",
+            icon: "10n",
             id: 500,
             main: "Rain",
-            date: new Date('2017-02-17T12:00:00.000Z'),
+            date: new Date('2017-02-16T12:00:00.000Z'),
         });
         expect((await load.cloudy())[0]).toEqual({
             description: "broken clouds",

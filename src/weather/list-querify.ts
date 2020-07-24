@@ -12,6 +12,9 @@ const interval = (begin: Date, end: Date, by: 'hour' | 'day') => {
             start.setHours(start.getHours() + 1);
         }
     }
+    if (start.getTime() <= end.getTime()) {
+        acc.push(new Date(start));
+    }
     return acc;
 }
 
@@ -22,7 +25,7 @@ const resolveList = async <T>(
 ) => {
     await copied.result();
     return (await Promise.all(
-        time.map(async unit => ([await iter(copied.at(unit)), unit]))
+        time.map(async (unit, i) => ([await iter(copied.at(unit, time[i + 1] || copied.dates[1])), unit]))
     )).filter(res => res[0] !== null).map(res => {
         if (res[0] instanceof Date || typeof res[0] === 'number') {
             return {
