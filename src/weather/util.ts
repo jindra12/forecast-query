@@ -43,7 +43,8 @@ export const isBetween = (from: Date, to: Date, query: Query) => from.getTime() 
     && from.getTime() <= query.to.getTime()
     && to.getTime() >= query.to.getTime();
 
-export const isPast = (query: Query): boolean => !isDaily(query) && query.from.getTime() < today().getTime();
+export const isPast = (query: Query): boolean => !isDaily(query)
+    && Math.floor(query.from.getTime() / 3600) < Math.floor(today().getTime() / 3600);
 
 export const getLocalFromUtc = (time: number) => time + (new Date().getTimezoneOffset() * 60 * 1000);
 export const getUtcFromLocal = (time: number) => time - (new Date().getTimezoneOffset() * 60 * 1000);

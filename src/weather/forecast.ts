@@ -299,9 +299,8 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
 
             if (getByDate.length > 0) {
                 return getByDate;
-            } else {
-                forec.response = [];
             }
+
             const locationResolved = forec.location.get();
             let apiQuery: ApiQuery = {
                 appid: apiKey,
