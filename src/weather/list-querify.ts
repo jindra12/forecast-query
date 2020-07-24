@@ -21,7 +21,18 @@ const resolveList = async <T>(
     iter: (forec: Forecast) => Promise<T | null>
 ) => {
     await copied.result();
-    return (await Promise.all(time.map(unit => iter(copied.at(unit))))).filter(res => res !== null) as T[];
+    return (await Promise.all(
+        time.map(async unit => ([await iter(copied.at(unit)), unit]))
+    )).filter(res => res[0] !== null).map(res => {
+        if (res[0] instanceof Date || typeof res[0] === 'number') {
+            return {
+                value: res[0],
+                date: res[1],
+            };
+        } else {
+            return { ...res[0], date: res[1] }
+        }
+    }) as any;
 }
 
 export const listModification = (forecast: Forecast, by: 'hour' | 'day'): ListForecastQueries => {

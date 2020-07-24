@@ -75,4 +75,47 @@ describe("Can send an api request and then read day-by-day results from the resp
         load.previous('day');
         expect(await load.temp('max')).toBe(285.51);
     });
+    test("Can time-travel using list", async () => {
+        const fakeDate = setWhatIsToday(new Date(1487246400 * 1000))!;
+        const fourDaysAhead = new Date(fakeDate);
+        fourDaysAhead.setDate(fourDaysAhead.getDate() + 4);
+        const load = forecast(apiKey).in('London', 'us')
+            .at(new Date(fakeDate), fourDaysAhead)
+            .fetch(global.fetch)
+            .list();
+        expect((await load.pressure()).map(val => val.value)).toEqual([
+            970.91,
+            966.38,
+            964.57,
+            962.15,
+        ]);
+        expect((await load.temp()).map(val => val.value)).toEqual([
+            285.66,
+            276.455,
+            278.367,
+            277.984,
+        ]);
+        expect((await load.temp('max')).map(val => val.value)).toEqual([
+            285.66,
+            276.455,
+            278.367,
+            277.984,
+        ]);
+        expect((await load.rain()).map(val => val.value)).toEqual([0, 0, 0, 0]);
+        expect((await load.clouds()).map(val => val.value)).toEqual([0, 92, 8, 0]);
+        expect((await load.rainy())[0]).toEqual({
+            description: "light rain",
+            icon: "10d",
+            id: 500,
+            main: "Rain",
+            date: new Date('2017-02-17T12:00:00.000Z'),
+        });
+        expect((await load.cloudy())[0]).toEqual({
+            description: "broken clouds",
+            icon: "04n",
+            id: 803,
+            main: "Clouds",
+            date: new Date('2017-02-16T12:00:00.000Z'),
+        });
+    });
 });

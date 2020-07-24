@@ -3,6 +3,7 @@ import { today, daysAheadFromNow, closestWeek } from "./util";
 import { request } from "./requests";
 import { Query, ApiQuery } from "./derived-request-types";
 import { querify } from "./querify";
+import { listModification } from "./list-querify";
 
 const location = (): Locator => {
     const loc: Locator = {
@@ -373,6 +374,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             forec.response = forec.response.sort((a, b) => a.weather.dt - b.weather.dt);
             return filterResultsByDate(forec.response);
         },
+        list: by => listModification(forec, by || 'day'),
     });
     return forec;
 };

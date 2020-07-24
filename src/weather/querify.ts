@@ -1,5 +1,6 @@
-import { ForecastInfo, ForecastQueries, Forecast, Result } from "../types";
+import { ForecastInfo, Forecast, Result } from "../types";
 import { TypeOfWeather, WeatherMain, WeatherId } from "./derived-request-types";
+import { ForecastQueries } from "./query-types";
 
 export const querify = (forecast: ForecastInfo): Forecast => {
     const getTypeOfWeatherBy = async <T extends TypeOfWeather>(compare: (item: TypeOfWeather) => boolean): Promise<T | null> => (

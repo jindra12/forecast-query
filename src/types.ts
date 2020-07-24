@@ -112,6 +112,11 @@ export interface ForecastInfo {
      */
     copy: () => Forecast;
 
+    /**
+     * Create a list of predictions through certain dates
+     */
+    list: (by?: 'hour' | 'day') => ListForecastQueries;
+
     // Properties
 
     fetchingFn?: (request: RequestInfo) => Promise<Response>;
