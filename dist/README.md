@@ -71,7 +71,7 @@ expect((await load.sunny())?.description).toBe('sky is clear');
 #### Example of subscription use
 
 With subscribers used, there is a greater attention to speedy delivery, which might mean some requests will not be cached.
-Will work on better caching in the future.
+If you need cached requests with an array of weather results, please see the example below this one.
 
 ```typescript
 
@@ -94,6 +94,26 @@ forecast(key).around(50.08804, 14.42076)
     .dayAfterTomorrow()
     .clearSubscribers();
 console.log(weatherList.sort((a, b) => a.date.getTime() - b.date.getTime()));
+
+```
+
+### Changes since 1.2.0
+
+Stop emptying cache after failed fetch. Add .list function to allow users to iterate over wide variety of results.
+.list allows you to specify a certain condition and get results across a wide range of dates with just one or two lines.
+All of the functions of usual weather api will return an array of results with dates appended to them.
+
+#### Simple example of .list
+
+```typescript 
+
+const list = forecast(key)
+    .around(50.08804, 14.42076)
+    .at(today, fourDaysLater)
+    .list('hour');
+console.log(await list.clouds());
+console.log(await list.percipitation('rain'));
+console.log(await list.cloudy()); // This will fetch the description of the clouds outside from today to 4 days later date, with every-hour updates.
 
 ```
 
