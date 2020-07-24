@@ -65,7 +65,7 @@ const storageUnit: Storage & { stored: { [key: string]: Result[] } } = {
     clear: () => {
         storageUnit.stored = {};
     },
-    getItem: (key: string) => storageUnit.stored[key] ? JSON.stringify(storageUnit.stored[key]) : null,
+    getItem: (key: string) =>  storageUnit.stored[key] ? JSON.stringify(storageUnit.stored[key]) : null,
     key: (index: number) => Object.keys(storageUnit.stored)[index],
     length: 0,
     removeItem: (key: string) => {
@@ -314,14 +314,7 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
             const buildResponse = (query: Query) => request(
                 query,
                 fetcher,
-                (url, contents) => forec.storage.setItem(url, JSON.stringify(contents)),
-                url => {
-                    const item = forec.storage.getItem(url);
-                    if (!item) {
-                        return null;
-                    }
-                    return JSON.parse(item);
-                },
+                forec.storage,
                 forec.reporter,
             );
             switch (locationResolved.kind) {

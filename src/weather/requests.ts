@@ -6,16 +6,16 @@ import { Result } from "../types";
 export const request = async (
     query: Query,
     fetchImpl: (init: RequestInfo) => Promise<Response>,
-    cache: (url: string, contents: Result[]) => void,
-    cached: (url: string) => Result[] | null,
+    storage: Storage,
     reportError: (e: any) => void,
 ): Promise<Result[] | null> => {
     let tried = requestImpl(query);
     if (tried === null) {
         return null;
     }
-    if (cached(tried[0])) {
-        return cached(tried[0]);
+    const stored = storage.getItem(tried[0]);
+    if (stored) {
+        return JSON.parse(stored);
     }
     try {
         const response = await fetchImpl(tried[0]);
@@ -23,7 +23,7 @@ export const request = async (
             const json = await response.json();
             json.kind = tried[1];
             const unified = UnifyApiResponse(json);
-            cache(tried[0], unified);
+            storage.setItem(tried[0], JSON.stringify(unified));
             return unified;
         } else {
             reportError(response);

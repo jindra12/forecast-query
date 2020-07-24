@@ -18,14 +18,23 @@ const interval = (begin: Date, end: Date, by: 'hour' | 'day') => {
     return acc;
 }
 
+const syncPromises = async <T, E>(array: T[], applied: (value: T, index: number) => Promise<E>): Promise<E[]> => {
+    const acc: E[] = [];
+    for (let i = 0; i < array.length; i++) {
+        acc.push(await applied(array[i], i));
+    }
+    return acc;
+};
+
 const resolveList = async <T>(
     time: Date[],
     copied: Forecast,
     iter: (forec: Forecast) => Promise<T | null>
 ) => {
     await copied.result();
-    return (await Promise.all(
-        time.map(async (unit, i) => ([await iter(copied.at(unit, time[i + 1] || copied.dates[1])), unit]))
+    return (await syncPromises(
+        time, 
+        async (unit, i) => ([await iter(copied.at(unit, time[i + 1] || copied.dates[1])), unit]),
     )).filter(res => res[0] !== null).map(res => {
         if (res[0] instanceof Date || typeof res[0] === 'number') {
             return {
