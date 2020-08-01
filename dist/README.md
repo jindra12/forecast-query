@@ -117,4 +117,9 @@ console.log(await list.cloudy()); // This will fetch the description of the clou
 
 ```
 
+### Other packages of interest
+
+1) react-weather-forecast - deprecated and deleted.
+2) react-forecast-query: https://www.npmjs.com/package/react-forecast-query, Higher order component wrapper for this package.
+
 If you find any bugs, or have ideas about improving this package, please file in a task or a pull request :) .
