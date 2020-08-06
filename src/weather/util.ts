@@ -44,7 +44,7 @@ export const isBetween = (from: Date, to: Date, query: Query) => from.getTime() 
     && to.getTime() >= query.to.getTime();
 
 export const isPast = (query: Query): boolean => !isDaily(query)
-    && Math.floor(query.from.getTime() / 3600) < Math.floor(today().getTime() / 3600);
+    && Math.floor(query.from.getTime() / (1000 * 60 * 60 * 24)) < Math.floor(today().getTime() / (1000 * 60 * 60 * 24));
 
 export const getLocalFromUtc = (time: number) => time + (new Date().getTimezoneOffset() * 60 * 1000);
 export const getUtcFromLocal = (time: number) => time - (new Date().getTimezoneOffset() * 60 * 1000);

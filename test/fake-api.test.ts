@@ -84,6 +84,30 @@ describe("Can send an api request to fake api and analyze results", () => {
         expect((await load.sun('set'))?.getTime()).toBe(1595099011 * 1000);
         expect((await load.temp('feel'))).toBe(293.1);
     });
+    test("onecall/timemachine?exclude=minutely&lat=35&lon=139&dt=1595100167 - with geolocation", async () => {
+        setWhatIsToday(null);
+        const load = (await forecast(apiKey).geo(
+            { 
+                getCurrentPosition: success => success({
+                    coords: {
+                        latitude: 35,
+                        longitude: 139,
+                        accuracy: 1,
+                        altitude: 1,
+                        altitudeAccuracy: 1,
+                        heading: 1,
+                        speed: 1,
+                    },
+                    timestamp: new Date().getTime(),
+                }), 
+            }
+        )).at(new Date((1595100167 - 7200) * 1000)).fetch(global.fetch);
+        await load.result(); // Pre-load results, hack needed because of local time/utc, you dont need this in real use
+        load.hour(12);
+        expect((await load.sun())?.getTime()).toBe(1595041993 * 1000);
+        expect((await load.sun('set'))?.getTime()).toBe(1595099011 * 1000);
+        expect((await load.temp('feel'))).toBe(293.1);
+    });
     test("onecall?exclude=minutely&lat=35&lon=139", async () => {
         setWhatIsToday(new Date((1595100167 + 43200) * 1000)); // Move it by 12 hours
         const load = forecast(apiKey).around(35, 139).fetch(global.fetch);

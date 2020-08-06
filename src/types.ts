@@ -117,6 +117,13 @@ export interface ForecastInfo {
      */
     list: (by?: 'hour' | 'day') => ListForecastQueries;
 
+    /**
+     * Perform one-time request to receive geolocation.
+     * Can receive custom partial navigator.location object.
+     * Any errors will be caught and given to error function
+     */
+    geo: (geolocation?: Pick<Geolocation, 'getCurrentPosition'>) => Promise<Forecast>;
+
     // Properties
 
     fetchingFn?: (request: RequestInfo) => Promise<Response>;

@@ -117,6 +117,17 @@ console.log(await list.cloudy()); // This will fetch the description of the clou
 
 ```
 
+### Changes since 1.3.0
+
+Can now use .geo() to access user location on devices supporting navigator.geolocation.getCurrentPosition.
+
+
+In case of server-side use, you can define your own getCurrentPosition callback.
+
+### Changes since 1.3.1
+
+Fix a bug where time machine is called with invalid date
+
 ### Other packages of interest
 
 1) react-weather-forecast - deprecated and deleted.

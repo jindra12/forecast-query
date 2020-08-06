@@ -117,6 +117,18 @@ export const forecast = (apiKey: string, isPro: boolean = false): Forecast => {
         },
         reporter: console.warn,
         fetchingFn: typeof window !== 'undefined' ? window.fetch : undefined,
+        geo: async (geolocation = typeof navigator !== 'undefined' && typeof navigator.geolocation !== 'undefined' ? navigator.geolocation : undefined) => {
+            if (!geolocation) {
+                return forec;
+            }
+            try {
+                const result = await new Promise<Position>((resolve, reject) => geolocation.getCurrentPosition(resolve, reject));
+                forec.around(result.coords.latitude, result.coords.longitude);
+            } catch (e) {
+                forec.reporter(e);
+            }
+            return forec;
+        },
         around: (lat, lon) => {
             forec.location.set({ kind: 'geo', geo: { lat, lon } });
             forec.response = [];
